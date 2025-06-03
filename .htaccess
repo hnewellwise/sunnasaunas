@@ -1,8 +1,19 @@
-# Enable pretty URLs
+# Enable mod_rewrite
 RewriteEngine On
+
+# Remove .html from URLs (allow access without .html)
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^([^/]+)$ $1.html [L]
+
+# Optional: Redirect .html → clean URL for consistency
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /([^/]+)\.html\ HTTP/
+RewriteRule ^ %1 [R=301,L]
+
+# Existing fallback to index.html for SPAs or missing routes
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^ index.html [QSA,L]
+
 
 # MIME types
 AddType image/svg+xml svg svgz
