@@ -16,6 +16,9 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
+  <!-- jQuery -->
+<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;600&family=Karla:wght@300;400;600&display=swap" rel="stylesheet">
 
@@ -29,6 +32,9 @@
   <meta property="og:url" content="https://sunnasaunas.com/">
   <meta name="twitter:card" content="summary_large_image">
 </head>
+
+ <!-- Scripts -->
+<script defer src="https://cloud.umami.is/script.js" data-website-id="02154092-9844-4039-85d2-363108703c6b"></script>
 
 <body>
 
@@ -99,8 +105,7 @@
           <strong>Sunna comes to you.</strong><br><br>
           We set it up. You make it part of something meaningful.
         </p>
-        <br>
-        <a href="#faq" class="btn-sunna mt-3 text-decoration-none">How It Works</a>
+        <a href="#faq" class="btn-sunna mt-5 text-decoration-none">How It Works</a>
       </div>
 
     </div>
@@ -109,25 +114,148 @@
 
 
 
-<section class="section bg-white" id="gallery">
-  <h4 class="mb-3">Moments That Stay With You</h4>
-  <br>
-  <div class="container position-relative">
-    <button class="gallery-arrow left" aria-label="Previous">&#10094;</button>
+<section id="gallery">
+  <div class="container gal-container">
+    <div class="gallery-header d-flex justify-content-center mb-4">
+      <h3 class="text-center">Moments That Stay With You</h3>
+    </div>
+    <div class="row">
 
-   <div class="gallery-scroll d-flex">
-  <a><img src="images/gallery1.jpg" alt="Gallery Image 1" loading="lazy"></a>
-  <a><img src="images/gallery2.jpg" alt="Gallery Image 2" loading="lazy"></a>
-  <a><img src="images/gallery3.jpg" alt="Gallery Image 3" loading="lazy"></a>
-  <a><img src="images/gallery4.jpg" alt="Gallery Image 4" loading="lazy"></a>
-</div>
+      <!-- Gallery Item 1 -->
+      <div class="col-md-4 col-sm-6 gal-item mb-4">
+        <div class="box">
+          <a href="#" data-bs-toggle="modal" data-bs-target="#img1">
+            <img src="images/gallery1.jpg" class="img-fluid" loading="lazy" alt="Gallery image">
+          </a>
+        </div>
+      </div>
+      <div class="modal fade" id="img1" tabindex="-1" aria-labelledby="img1Label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+          <div class="modal-content">
+            <div class="modal-header border-0">
+              <h5 class="modal-title" id="img1Label">gallery1.jpg</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0">
+              <img src="images/gallery1.jpg" class="img-fluid w-100" loading="lazy" alt="Full view of gallery1.jpg">
+            </div>
+          </div>
+        </div>
+      </div>
 
+      <!-- Gallery Item 2 -->
+      <div class="col-md-4 col-sm-6 gal-item mb-4">
+        <div class="box">
+          <a href="#" data-bs-toggle="modal" data-bs-target="#img2">
+            <img src="images/gallery2.jpg" class="img-fluid" loading="lazy" alt="Gallery image">
+          </a>
+        </div>
+      </div>
+      <div class="modal fade" id="img2" tabindex="-1" aria-labelledby="img2Label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+          <div class="modal-content">
+            <div class="modal-header border-0">
+              <h5 class="modal-title" id="img2Label">gallery2.jpg</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0">
+              <img src="images/gallery2.jpg" class="img-fluid w-100" loading="lazy" alt="Full view of gallery2.jpg">
+            </div>
+          </div>
+        </div>
+      </div>
 
-    <button class="gallery-arrow right" aria-label="Next">&#10095;</button>
+      <!-- Gallery Item 3 -->
+      <div class="col-md-4 col-sm-6 gal-item mb-4">
+        <div class="box">
+          <a href="#" data-bs-toggle="modal" data-bs-target="#img3">
+            <img src="images/gallery3.jpg" class="img-fluid" loading="lazy" alt="Gallery image">
+          </a>
+        </div>
+      </div>
+      <div class="modal fade" id="img3" tabindex="-1" aria-labelledby="img3Label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+          <div class="modal-content">
+            <div class="modal-header border-0">
+              <h5 class="modal-title" id="img3Label">gallery3.jpg</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0">
+              <img src="images/gallery3.jpg" class="img-fluid w-100" loading="lazy" alt="Full view of gallery3.jpg">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gallery Item 4 -->
+      <div class="col-md-4 col-sm-6 gal-item mb-4">
+        <div class="box">
+          <a href="#" data-bs-toggle="modal" data-bs-target="#img4">
+            <img src="images/gallery4.jpg" class="img-fluid" loading="lazy" alt="Gallery image">
+          </a>
+        </div>
+      </div>
+      <div class="modal fade" id="img4" tabindex="-1" aria-labelledby="img4Label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+          <div class="modal-content">
+            <div class="modal-header border-0">
+              <h5 class="modal-title" id="img4Label">gallery4.jpg</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0">
+              <img src="images/gallery4.jpg" class="img-fluid w-100" loading="lazy" alt="Full view of gallery4.jpg">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gallery Item 5 -->
+      <div class="col-md-4 col-sm-6 gal-item mb-4">
+        <div class="box">
+          <a href="#" data-bs-toggle="modal" data-bs-target="#img5">
+            <img src="images/gallery5.jpg" class="img-fluid" loading="lazy" alt="Gallery image">
+          </a>
+        </div>
+      </div>
+      <div class="modal fade" id="img5" tabindex="-1" aria-labelledby="img5Label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+          <div class="modal-content">
+            <div class="modal-header border-0">
+              <h5 class="modal-title" id="img5Label">gallery5.jpg</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0">
+              <img src="images/gallery5.jpg" class="img-fluid w-100" loading="lazy" alt="Full view of gallery5.jpg">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gallery Item 6 -->
+      <div class="col-md-4 col-sm-6 gal-item mb-4">
+        <div class="box">
+          <a href="#" data-bs-toggle="modal" data-bs-target="#img6">
+            <img src="images/gallery6.jpg" class="img-fluid" loading="lazy" alt="Gallery image">
+          </a>
+        </div>
+      </div>
+      <div class="modal fade" id="img6" tabindex="-1" aria-labelledby="img6Label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+          <div class="modal-content">
+            <div class="modal-header border-0">
+              <h5 class="modal-title" id="img6Label">gallery6.jpg</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0">
+              <img src="images/gallery6.jpg" class="img-fluid w-100" loading="lazy" alt="Full view of gallery6.jpg">
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
   </div>
 </section>
-
-
 
 
 <section class="section" id="faq">
@@ -143,7 +271,7 @@
         </h2>
         <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
           <div class="accordion-body">
-            Yes — we deliver all over continental Portugal. We’ll set it up, walk you through it, and get the heat going.
+            Yes — we can deliver the sauna all over continental Portugal. We’ll set it up, walk you through it, and get the heat going.
           </div>
         </div>
       </div>
@@ -182,7 +310,7 @@
         </h2>
         <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
           <div class="accordion-body">
-            Yes. Everything is fully insured for peace of mind.
+            Yes. Everything is fully insured for peace of mind. You will be required to sign a waiver to aknowledge that you have been instructed on how to use the sauna correctly and safely.
           </div>
         </div>
       </div>
@@ -257,10 +385,17 @@
 </section>
 
 
-<section class="section" id="contact" style="background-image: url('contact-bg.jpg');">
-  <h4>Ready to heat things up?</h4>
-  <p>Contact us about next event or stay. <br>We speak Portuguese, English, French, Spanish & Italian.</p>
-<a href="https://forms.gle/djrqBw16YZBiyuFY7" target="_blank" class="btn-sunna mt-2 text-decoration-none">Get In Touch</a>
+<section class="section contact-section" id="contact">
+  <div class="contact-inner">
+    <h4 class="mb-3">Ready to heat things up?</h4>
+    <p class="mb-4">
+      Contact us about your next event or stay.<br>
+      We speak Portuguese, English, French, Spanish & Italian.
+    </p>
+    <a href="https://forms.gle/djrqBw16YZBiyuFY7" target="_blank" class="btn-sunna text-decoration-none">
+      Get In Touch
+    </a>
+  </div>
 </section>
 
 
