@@ -30,3 +30,14 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
+
+// lazy loading images
+
+document.addEventListener("DOMContentLoaded", () => {
+  const lazyImages = document.querySelectorAll('img[loading="lazy"]');
+  lazyImages.forEach(img => {
+    img.addEventListener("load", () => {
+      img.classList.add("lazy-loaded");
+    });
+  });
+});
