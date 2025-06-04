@@ -6,9 +6,9 @@ window.addEventListener("scroll", () => {
   const halfPage = document.body.scrollHeight / 2;
 
   if (scrollDepth > halfPage) {
-    backToTopBtn.style.display = "block";
+    backToTopBtn.classList.add("show");
   } else {
-    backToTopBtn.style.display = "none";
+    backToTopBtn.classList.remove("show");
   }
 });
 
