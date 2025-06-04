@@ -145,7 +145,6 @@ h1, h2, h3, h4 {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scroll-snap-type: x mandatory;
-    margin: 0;
     padding: 0 1rem;
   }
 
@@ -188,18 +187,6 @@ h1, h2, h3, h4 {
     width: 80vw; /* or a fixed width like 180px */
     aspect-ratio: 1 / 1;
     scroll-snap-align: start;
-  }
-}
-
-
-@media (max-width: 480px) {
-  .gallery-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-  }
-
-  .gallery-card {
-    aspect-ratio: 1 / 1;
   }
 }
 
