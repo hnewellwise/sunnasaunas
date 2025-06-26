@@ -1,11 +1,12 @@
 
 :root {
-  --lighter-bg: #F6F1EB;
-  --subtle-bg: #F4D79D;
-  --accent: #D97A57;
-  --alt-accent: #AABF94;
-  --subtle-text: #B8CACA;
-  --strongest-text: #2E2E2E;
+  --lighter-bg: #fbf9dc;
+  --subtle-bg: #E5E3C9;
+  --accent: #c87e5e;
+  --alt-accent: #96adbc;
+  --subtle-text: #acb387;
+  --strongest-text: #3c422c;
+  --light-text: #e5e3c9;
   --white: #ffffff;
 }
 
@@ -18,6 +19,8 @@ html, body {
   background-color: var(--lighter-bg);
   color: var(--strongest-text);
   overflow-x: hidden;
+  scroll-padding-top: 56px;
+
 }
 
 h1, h2, h3, h4 {
@@ -33,13 +36,28 @@ h1, h2, h3, h4 {
 }
 
 .section.fullscreen {
-  min-height: 100vh;
+  padding-top: 56px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
 }
 
+.section-blue {
+  padding: 4rem 2rem;
+  text-align: center;
+  background-color: var(--alt-accent);
+  color: var(--light-text);
+}
+
+.section-blue h3 {
+  color: var(--light-text);
+}
+
+.background-tint {
+  background-color: var(--subtle-bg);
+  color: var(--strongest-text);
+}
 
 .parallax {
   background-attachment: fixed;
@@ -75,6 +93,28 @@ h1, h2, h3, h4 {
 .btn-sunna:hover {
   text-decoration: none;
   background-color: #c96c4d;
+}
+
+.btn-light {
+  background-color: var(--subtle-bg);
+  color: var(--strongest-text);
+  border: none;
+  padding: 0.75rem 2rem;
+  font-size: 0.95rem;
+  border-radius: 2rem;
+  text-decoration: none !important;
+    text-align: center;
+  transition: background-color 0.3s ease;
+  max-width: 240px;
+  width: 100%;
+  display: inline-block; 
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.btn-light:hover {
+  text-decoration: none;
+  background-color: #d0c9b2;
 }
 
 /* Gallery Section */
@@ -185,12 +225,12 @@ h1, h2, h3, h4 {
 
 
 .accordion-button:not(.collapsed) {
-  background-color: var(--subtle-bg);
+  background-color: var(--accent);
   color: var(--strongest-text);
 }
 
 .overlay {
-  background-color: rgba(255, 255, 255, 0.6);
+  background-color: #e5e3c9;
   border-radius: 1rem;
   padding: 2rem;
   width: 100%;
@@ -273,13 +313,22 @@ footer {
   padding: 2rem 1rem;
 }
 
+.navbar {
+  height: 56px; 
+  background-color: var(--lighter-bg); 
+  z-index: 1030; 
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
 .nav-link.active {
   color: var(--accent) !important;
   font-weight: 600;
 }
 
 .dropdown-menu .dropdown-item:hover {
-  background-color: #F6F1EB;
+  background-color: var(--subtle-bg);
 }
 
 .section > * {
@@ -319,5 +368,17 @@ footer {
 }
 
 .btn-to-top:hover {
-  background-color: #B65C42;
+  background-color: var(--accent);
 }
+
+.jumbotron {
+  background-color: var(--accent);
+  color: var(--light-text);
+  padding-top: 6rem;
+  padding-bottom: 4rem;
+}
+
+.jumbotron h1 {
+  color: var(--light-text);
+}
+
