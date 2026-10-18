@@ -6,7 +6,7 @@ translationKey: about
 translationStatus: source
 sections:
   - type: split
-    pad: sm
+    height: auto
     level: 1
     heading: How It Works
     body: Simple for you. Memorable for your guests
@@ -17,6 +17,8 @@ sections:
     imageSize: sm
 
   - type: split
+    imageFirstMobile: true
+    height: md
     theme: sage
     heading: Step-by-step
     image: { src: 20251006-080917.jpg }
@@ -35,6 +37,7 @@ sections:
         When it’s done, we come back, pack it down, and leave no trace.
 
   - type: stack
+    height: md
     blocks:
       - body: |
           ### What’s Included
@@ -92,6 +95,7 @@ sections:
           Let us know where you’re hosting — we’ll confirm availability & cost.
 
   - type: cta
+    height: md
     heading: Let's Make It Happen
     body: |
       We tailor each booking to your space, your people, your rhythm.

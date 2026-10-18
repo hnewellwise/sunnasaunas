@@ -14,9 +14,9 @@ interface Props {
 const { section, lang } = Astro.props;
 ---
 
-<SectionWrap theme={section.theme} pad={section.pad ?? 'sm'} id={section.id} class="intro">
+<SectionWrap theme={section.theme} height={section.height ?? 'auto'} id={section.id} class="intro">
   <div class="inner" data-reveal>
-    {section.icon && <Img src={section.icon.src} alt={section.icon.alt ?? ''} sizes="72px" widths={[72, 144]} class="icon" />}
+    {section.icon && <Img src={section.icon.src} alt={section.icon.alt ?? ''} sizes="130px" widths={[130, 260]} class="icon" />}
     <h2 class="h4" set:html={mdInline(section.heading, lang)} />
     {section.buttons && (
       <div class="buttons">
@@ -33,8 +33,9 @@ const { section, lang } = Astro.props;
     text-align: center;
   }
   .inner :global(.icon) {
-    width: 72px;
-    margin: 0 auto 24px;
+    height: 61px;
+    width: auto;
+    margin: 0 auto 10px;
   }
   .h4 {
     font-size: var(--fs-h4);
@@ -49,7 +50,7 @@ const { section, lang } = Astro.props;
   }
   .buttons :global(.btn) {
     font-size: 13px;
-    padding-block: 1.6em;
+    padding-block: 1.9em;
   }
   @media (max-width: 767px) {
     .inner {

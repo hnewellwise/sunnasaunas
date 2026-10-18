@@ -1,7 +1,10 @@
 ---
-import { Image } from 'astro:assets';
 import { render, type CollectionEntry } from 'astro:content';
 import type { Locale } from '../i18n/config';
+import { pathFor } from '../i18n/routes';
+import { t } from '../i18n/ui';
+import { entriesFor, slugOf } from '../lib/content';
+import Pager from '../components/Pager.astro';
 
 interface Props {
   lang: Locale;
@@ -10,15 +13,90 @@ interface Props {
 
 const { lang, entry } = Astro.props;
 const { Content } = await render(entry);
-const { title, pubDate, heroImage, heroAlt } = entry.data;
-// TODO(build): replicate the Squarespace blog post layout.
+const { title, pubDate } = entry.data;
+const posts = await entriesFor('circle', lang);
+const i = posts.findIndex((p) => p.id === entry.id);
+const link = (p?: CollectionEntry<'circle'>) => p && { href: pathFor('circle', lang, slugOf(p)), title: p.data.title };
+const dateLocale = lang === 'en' ? 'en-GB' : lang;
+// The listing thumbnail (heroImage) is not repeated here: on Squarespace the post page shows the body only.
 ---
 
-<article class="circle-post">
+<article class="post">
   <header>
+    <time datetime={pubDate.toISOString()}>{pubDate.toLocaleDateString(dateLocale, { day: 'numeric', month: 'short', timeZone: 'UTC' })}</time>
     <h1>{title}</h1>
-    <time datetime={pubDate.toISOString()}>{pubDate.toLocaleDateString(lang, { dateStyle: 'long' })}</time>
   </header>
-  {heroImage && <Image src={heroImage} alt={heroAlt ?? ''} widths={[640, 1280, 1920]} sizes="100vw" />}
-  <Content />
+  <div class="body">
+    <Content />
+  </div>
 </article>
+<Pager prev={link(posts[i - 1])} next={link(posts[i + 1])} prevLabel={t(lang, 'blog.prev')} nextLabel={t(lang, 'blog.next')} />
+
+<style>
+  .post {
+    max-width: 62vw;
+    margin: 0 auto;
+    padding: clamp(48px, 8vw, 120px) 0 0;
+  }
+  time {
+    display: block;
+    font-size: 11px;
+    color: var(--sage);
+    margin-bottom: 2em;
+  }
+  h1 {
+    color: var(--sage);
+    font-size: var(--fs-h2);
+    line-height: 1.12;
+    margin-bottom: 0.6em;
+  }
+  .body {
+    font-size: var(--fs-small);
+    line-height: 1.3;
+  }
+  .body :global(h2),
+  .body :global(h3),
+  .body :global(h4) {
+    font-size: 30px;
+    margin: 1.2em 0 0.8em;
+  }
+  .body :global(img) {
+    width: 100%;
+    margin: 2em 0 1em;
+  }
+  .body :global(p:has(> img) + p > em:only-child) {
+    display: block;
+    margin-top: -0.4em;
+  }
+  /* Squarespace gallery blocks: several images in one paragraph -> thumbnail row. */
+  .body :global(p:has(> img + img)) {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2vw;
+    margin: 2em 0;
+  }
+  .body :global(p:has(> img + img) img) {
+    aspect-ratio: 1;
+    object-fit: cover;
+    margin: 0;
+  }
+  .body :global(a) {
+    color: var(--olive);
+  }
+  .body :global(ul),
+  .body :global(ol) {
+    padding-left: 1.2em;
+  }
+  @media (max-width: 767px) {
+    .post {
+      max-width: none;
+      padding-inline: var(--gutter);
+    }
+    h1 {
+      font-size: var(--fs-h3);
+    }
+    .body :global(p:has(> img + img)) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+</style>

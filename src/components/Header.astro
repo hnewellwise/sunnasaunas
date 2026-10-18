@@ -22,7 +22,7 @@ const otherLangs = alternates.filter((a) => a.lang !== lang);
   <div class="bar">
     <button class="burger" aria-expanded="false" aria-controls="mobile-menu">
       <span class="visually-hidden">{t(lang, 'a11y.openMenu')}</span>
-      <span class="bun"></span><span class="bun"></span>
+      <span class="bun bun1"></span><span class="bun bun2"></span>
     </button>
     <a class="logo" href={pathFor('home', lang)} aria-label="Sunna">
       <Image src={logo} alt="Sunna" height={56} densities={[1, 2]} loading="eager" />
@@ -167,10 +167,10 @@ const otherLangs = alternates.filter((a) => a.lang !== lang);
     background: var(--sage);
     transition: transform 0.2s;
   }
-  .bun:nth-of-type(1) { top: 12px; }
-  .bun:nth-of-type(2) { top: 20px; }
-  .burger[aria-expanded='true'] .bun:nth-of-type(1) { transform: translateY(4px) rotate(45deg); }
-  .burger[aria-expanded='true'] .bun:nth-of-type(2) { transform: translateY(-4px) rotate(-45deg); }
+  .bun1 { top: 12px; }
+  .bun2 { top: 20px; }
+  .burger[aria-expanded='true'] .bun1 { transform: translateY(4px) rotate(45deg); }
+  .burger[aria-expanded='true'] .bun2 { transform: translateY(-4px) rotate(-45deg); }
 
   .mobile-menu {
     position: fixed;

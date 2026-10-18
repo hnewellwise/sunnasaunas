@@ -12,6 +12,7 @@ sections:
       Delivered
 
   - type: intro
+    height: sm
     icon: { src: woosh-ok.png }
     heading: Sunna is a mobile sauna and cold plunge you can rent for a weekend, a week or more.
     buttons:
@@ -19,7 +20,7 @@ sections:
       - { text: Contact Us, href: "page:contact" }
 
   - type: split
-    pad: lg
+    height: lg
     heading: Beato Innovation District Pop Up
     body: |
       On March 27–29 we are organising a pop up sauna event at Beato Innovation District.
@@ -33,7 +34,7 @@ sections:
       - { text: Book A Session, href: "https://www.tickettailor.com/events/sunna/2130189" }
 
   - type: split
-    pad: lg
+    height: lg
     heading: Mobile Sauna & Ice Bath
     body: |
       Whether you're hosting a retreat in the mountains, planning a private weekend by the sea,
@@ -56,6 +57,7 @@ sections:
       - { text: How It Works, href: "page:about" }
 
   - type: collage
+    height: md
     theme: clay
     heading: |
       Not only a sauna,
@@ -66,6 +68,7 @@ sections:
       - { src: 20251002-121855.jpg }
 
   - type: cards
+    height: auto
     variant: round
     heading: Our Services
     items:
@@ -84,6 +87,7 @@ sections:
     button: { text: Contact Us, href: "page:contact" }
 
   - type: latestPosts
+    height: auto
     heading: The Circle
     body: Discover stories, rituals, and reflections from the sauna.
     label: Latest Blogs
@@ -92,6 +96,7 @@ sections:
     image: { src: woosh-dos.jpg }
 
   - type: cta
+    height: md
     heading: |
       Ready to
       heat it up ?

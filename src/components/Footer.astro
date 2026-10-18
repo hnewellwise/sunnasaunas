@@ -23,7 +23,7 @@ const right = footerNav.filter((n) => ['contact', 'privacy'].includes(n.key));
   <div class="col centre">
     <Img src="woosh-ok.png" alt="" sizes="60px" widths={[60, 120]} class="spiral" />
     <a class="ig" href={site.instagram} rel="me noopener" target="_blank" aria-label="Instagram">
-      <InstagramIcon width={24} height={24} aria-hidden="true" />
+      <InstagramIcon width={34} height={34} aria-hidden="true" />
     </a>
   </div>
   <ul class="col">
@@ -36,7 +36,7 @@ const right = footerNav.filter((n) => ['contact', 'privacy'].includes(n.key));
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     align-items: start;
-    padding: 48px var(--gutter) 72px;
+    padding: max(3.3vw, 3.3vh) var(--gutter) max(6.6vw, 6.6vh);
     color: var(--olive);
     font-size: var(--fs-small);
   }

@@ -1,3 +1,4 @@
+import type { ImageMetadata } from 'astro';
 import type { ButtonData } from '../Button.astro';
 
 /**
@@ -12,7 +13,12 @@ export type ImageShape = 'rounded' | 'oval' | 'square' | 'circle';
 
 export type Img = { src: string; alt?: string };
 
-type Base = { id?: string; theme?: Theme; pad?: 'sm' | 'md' | 'lg' };
+/**
+ * height mirrors Squarespace section heights: min-height 33/66/100vh with content padding
+ * max(3.3/6.6/10 vw, vh). 'auto' = content height with small padding.
+ */
+export type SectionHeight = 'sm' | 'md' | 'lg' | 'auto';
+type Base = { id?: string; theme?: Theme; height?: SectionHeight };
 
 export type HeroSection = Base & { type: 'hero'; image: Img; heading: string };
 
@@ -21,8 +27,12 @@ export type IntroSection = Base & { type: 'intro'; icon?: Img; heading: string; 
 export type SplitSection = Base & {
   type: 'split';
   heading?: string;
+  /** Semantic heading level (default 3). */
   level?: 1 | 2 | 3 | 4;
+  /** Visual heading size when it differs from the level (live page titles are H2-sized). */
+  headingSize?: 1 | 2 | 3 | 4;
   body?: string;
+  bodySize?: 'large';
   /** Rendered as a separate column instead of an image (e.g. page intro: heading left, text right). */
   aside?: string;
   image?: Img;
@@ -32,6 +42,8 @@ export type SplitSection = Base & {
   /** Crop ratio (width / height) of the image block, as cropped on Squarespace. */
   imageAspect?: number;
   imageAspectMobile?: number;
+  /** On mobile, show the image above the heading (as Squarespace did for some sections). */
+  imageFirstMobile?: boolean;
   buttons?: ButtonData[];
   accordion?: { title: string; body: string }[];
   /** Small caption block under the image column (contact page). */
@@ -76,7 +88,11 @@ export type StackSection = Base & {
   )[];
 };
 
-export type GallerySection = Base & { type: 'gallery'; images: Img[]; layout?: 'grid' | 'masonry' };
+export type GallerySection = Base & {
+  type: 'gallery';
+  /** Filenames in src/assets/images/, or image metadata from a collection entry. */
+  images: { src: string | ImageMetadata; alt?: string }[];
+};
 
 export type FormSection = Base & { type: 'form'; form: 'contact' | 'quote'; heading?: string; body?: string };
 

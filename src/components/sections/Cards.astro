@@ -2,6 +2,7 @@
 import SectionWrap from './SectionWrap.astro';
 import Img from '../Img.astro';
 import Button from '../Button.astro';
+import CarouselArrows from '../CarouselArrows.astro';
 import type { Locale } from '../../i18n/config';
 import type { CardsSection } from './types';
 import { md, mdInline } from '../../lib/markdown';
@@ -17,7 +18,7 @@ interface Props {
 const { section: s, lang } = Astro.props;
 ---
 
-<SectionWrap theme={s.theme} pad={s.pad} id={s.id}>
+<SectionWrap theme={s.theme} height={s.height} id={s.id}>
   {s.heading && <h2 class="title" data-reveal set:html={mdInline(s.heading, lang)} />}
   <ul class:list={['cards', s.variant]}>
     {s.items.map((item) => (
@@ -33,6 +34,7 @@ const { section: s, lang } = Astro.props;
       </li>
     ))}
   </ul>
+  {s.variant === 'round' && <CarouselArrows target=".cards" />}
   {s.button && (
     <div class="after" data-reveal>
       <Button {...s.button} lang={lang} />
@@ -69,7 +71,7 @@ const { section: s, lang } = Astro.props;
     padding: 22px 6% 0;
   }
   .round .card-title {
-    font-size: 26px;
+    font-size: clamp(22px, 1.89vw, 27.2px);
     letter-spacing: -0.03em;
     margin-bottom: 0.4em;
   }
@@ -107,12 +109,11 @@ const { section: s, lang } = Astro.props;
   .overlay .card-title {
     color: #fff;
     font-size: var(--fs-h4);
-    margin-bottom: 0.3em;
+    margin-bottom: 0.9em;
   }
   .overlay .rte {
-    font-family: var(--font-heading);
     font-weight: 700;
-    font-size: 20px;
+    font-size: var(--fs-large);
   }
 
   .after {
@@ -133,6 +134,18 @@ const { section: s, lang } = Astro.props;
     }
     .round .photo {
       padding-inline: 6vw;
+    }
+    /* Mobile: one card at a time, swipe or use the arrows (as on Squarespace). */
+    .round {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      gap: 12px;
+    }
+    .round .card {
+      flex: 0 0 100%;
+      scroll-snap-align: start;
     }
   }
 </style>

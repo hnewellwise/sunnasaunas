@@ -22,10 +22,12 @@
   --header-h: 68px;
   --radius-img: 24px;
 
+  /* Measured on the live site at 1440px (max) and 390px (min); fluid in between. */
   --fs-h1: 54px;
-  --fs-h2: 50px;
-  --fs-h3: 51px;
-  --fs-h4: 34px;
+  --fs-h2: clamp(43.3px, 4.37vw, 62.9px);
+  --fs-h3: clamp(36.3px, 3.54vw, 51px);
+  --fs-h4: clamp(26.1px, 2.36vw, 34px);
+  --fs-large: clamp(21px, 1.77vw, 25.5px);
   --fs-body: 17px;
   --fs-small: 15.3px;
   --fs-btn: 12px;
@@ -34,10 +36,7 @@
 @media (max-width: 767px) {
   :root {
     --gutter: 6vw;
-    --fs-h1: 44px;
-    --fs-h2: 40px;
-    --fs-h3: 37.6px;
-    --fs-h4: 26.8px;
+    --fs-h1: 56.6px;
     --fs-body: 16px;
     --fs-small: 14.9px;
   }
@@ -80,10 +79,17 @@ h4 {
   letter-spacing: -0.05em;
   margin: 0 0 0.5em;
 }
-h1 { font-size: var(--fs-h1); line-height: 1; }
-h2 { font-size: var(--fs-h2); line-height: 1.07; }
-h3 { font-size: var(--fs-h3); line-height: 1.1; }
-h4 { font-size: var(--fs-h4); line-height: 1.15; }
+h1, .t-h1 { font-size: var(--fs-h1); line-height: 1; }
+h2, .t-h2 { font-size: var(--fs-h2); line-height: 1.07; }
+h3, .t-h3 { font-size: var(--fs-h3); line-height: 1.1; }
+h4, .t-h4 { font-size: var(--fs-h4); line-height: 1.15; }
+/* Visual size classes win over the element default (headings keep their semantic level). */
+.t-h1 { font-size: var(--fs-h1) !important; line-height: 1; }
+.t-h2 { font-size: var(--fs-h2) !important; line-height: 1.07; }
+.t-h3 { font-size: var(--fs-h3) !important; line-height: 1.1; }
+.t-h4 { font-size: var(--fs-h4) !important; line-height: 1.15; }
+
+.large { font-size: var(--fs-large); line-height: 1.2; }
 
 p {
   margin: 0 0 1em;
@@ -106,6 +112,7 @@ a {
 .theme-cream { background: var(--cream); color: var(--clay); }
 .theme-clay { background: var(--clay); color: var(--cream); }
 .theme-sage { background: var(--sage); color: var(--cream); }
+.theme-olive { background: var(--olive); color: var(--cream); }
 .theme-cream-bold p { color: var(--olive); }
 
 .wrap {
@@ -119,7 +126,7 @@ a {
   font-weight: 500;
   font-size: var(--fs-btn);
   line-height: 1;
-  padding: 1.4em 2.6em;
+  padding: 1.75em 2.6em;
   border-radius: 300px;
   text-decoration: none;
   text-align: center;
@@ -135,6 +142,9 @@ a {
 .btn--tertiary { background: var(--sage); color: var(--olive); }
 .btn--inverse { background: var(--cream); color: var(--clay); }
 .btn--wide { min-width: 19vw; }
+@media (max-width: 767px) {
+  .btn { font-size: 15px; padding: 1.2em 2em; }
+}
 
 .rounded {
   border-radius: var(--radius-img);

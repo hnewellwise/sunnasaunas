@@ -39,6 +39,8 @@ const work = defineCollection({
     z.object({
       ...shared({ image }),
       date: z.coerce.date(),
+      /** Page heading when it differs from the title used in listings. */
+      heading: z.string().optional(),
       location: z.string().optional(),
       heroImage: image().optional(),
       heroAlt: z.string().optional(),

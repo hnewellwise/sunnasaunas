@@ -1,26 +1,51 @@
 ---
-import { Image } from 'astro:assets';
 import { render, type CollectionEntry } from 'astro:content';
 import type { Locale } from '../i18n/config';
+import { pathFor } from '../i18n/routes';
+import { t } from '../i18n/ui';
+import { entriesFor, slugOf } from '../lib/content';
+import Gallery from '../components/sections/Gallery.astro';
+import Pager from '../components/Pager.astro';
 
 interface Props {
   lang: Locale;
   entry: CollectionEntry<'work'>;
 }
 
-const { entry } = Astro.props;
+const { lang, entry } = Astro.props;
 const { Content } = await render(entry);
-const { title, heroImage, heroAlt, gallery } = entry.data;
-// TODO(build): replicate the Squarespace portfolio item layout (gallery grid + lightbox).
+const { title, heading, gallery } = entry.data;
+const items = await entriesFor('work', lang);
+const i = items.findIndex((p) => p.id === entry.id);
+const link = (p?: CollectionEntry<'work'>) => p && { href: pathFor('work', lang, slugOf(p)), title: p.data.title };
 ---
 
-<article class="work-entry">
-  <h1>{title}</h1>
-  {heroImage && <Image src={heroImage} alt={heroAlt ?? ''} widths={[640, 1280, 1920]} sizes="100vw" />}
-  <Content />
-  {gallery.length > 0 && (
-    <div class="gallery">
-      {gallery.map((img) => <Image src={img.src} alt={img.alt} widths={[400, 800]} sizes="(min-width: 768px) 33vw, 100vw" />)}
-    </div>
-  )}
+<article>
+  <header class="head">
+    <h1>{heading ?? title}</h1>
+    <div class="intro"><Content /></div>
+  </header>
+  <Gallery section={{ type: 'gallery', height: 'auto', images: gallery }} />
 </article>
+<Pager prev={link(items[i - 1])} next={link(items[i + 1])} prevLabel={t(lang, 'blog.prev')} nextLabel={t(lang, 'blog.next')} />
+
+<style>
+  .head {
+    max-width: 63vw;
+    margin: 0 auto;
+    padding: clamp(48px, 8vw, 120px) 0 clamp(16px, 3vw, 40px);
+    text-align: center;
+  }
+  h1 {
+    font-size: var(--fs-h3);
+  }
+  .intro {
+    font-size: var(--fs-small);
+  }
+  @media (max-width: 767px) {
+    .head {
+      max-width: none;
+      padding-inline: var(--gutter);
+    }
+  }
+</style>

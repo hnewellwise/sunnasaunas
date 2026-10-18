@@ -1,0 +1,50 @@
+---
+// Prev/next arrows for a scroll-snap track (Squarespace mobile list carousels). Shown on mobile only.
+interface Props {
+  target: string;
+}
+const { target } = Astro.props;
+---
+
+<div class="arrows" data-carousel={target}>
+  <button type="button" data-dir="-1" aria-label="Previous">←</button>
+  <button type="button" data-dir="1" aria-label="Next">→</button>
+</div>
+
+<script>
+  for (const nav of document.querySelectorAll<HTMLElement>('[data-carousel]')) {
+    const track = nav.parentElement?.querySelector<HTMLElement>(nav.dataset.carousel!);
+    if (!track) continue;
+    nav.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('button[data-dir]');
+      if (!btn) return;
+      const item = track.firstElementChild as HTMLElement | null;
+      const step = item ? item.getBoundingClientRect().width + 12 : track.clientWidth;
+      track.scrollBy({ left: Number(btn.dataset.dir) * step, behavior: 'smooth' });
+    });
+  }
+</script>
+
+<style>
+  .arrows {
+    display: none;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 24px;
+  }
+  button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 0;
+    background: var(--olive);
+    color: var(--cream);
+    font-size: 18px;
+    cursor: pointer;
+  }
+  @media (max-width: 767px) {
+    .arrows {
+      display: flex;
+    }
+  }
+</style>

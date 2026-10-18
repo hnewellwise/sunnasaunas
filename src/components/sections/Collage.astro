@@ -15,7 +15,7 @@ const { section: s, lang } = Astro.props;
 const [a, b, c] = s.images;
 ---
 
-<SectionWrap theme={s.theme ?? 'clay'} pad={s.pad} id={s.id}>
+<SectionWrap theme={s.theme ?? 'clay'} height={s.height} id={s.id}>
   <div class="collage">
     <h2 class="heading" data-reveal set:html={mdInline(s.heading, lang)} />
     {a && <div class="p p1" data-reveal><Img src={a.src} alt={a.alt ?? ''} sizes="(min-width: 768px) 33vw, 88vw" /></div>}

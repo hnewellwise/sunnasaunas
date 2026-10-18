@@ -6,8 +6,10 @@ translationKey: contact
 translationStatus: source
 sections:
   - type: split
-    pad: lg
+    imageFirstMobile: true
+    height: md
     level: 1
+    headingSize: 2
     heading: Get In Touch
     body: |
       Tell us about your next event, party or anything else. We’d love to make it happen.

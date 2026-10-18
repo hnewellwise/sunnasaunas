@@ -18,9 +18,14 @@ const only = onlyIdx > -1 ? process.argv[onlyIdx + 1].split(',') : null;
 const out = new URL(`../migration/capture/${mode}/`, import.meta.url).pathname;
 const paths = (only ?? (await readFile(new URL('../migration/old-urls.txt', import.meta.url), 'utf8')).split('\n').filter(Boolean))
   .filter((p) => !['/', '/portuguese'].includes(p) || only);
+// Old Squarespace paths that live elsewhere on the new site (files are still named by the old path,
+// so live/ and local/ captures line up for comparison).
+const NEW_PATH = { '/en/home': '/en', '/privacy-policy': '/en/privacy-policy' };
+const urlFor = (p) => (mode === 'local' ? NEW_PATH[p] ?? p : p);
 const extract = await readFile(new URL('./lib/extract-layout.js', import.meta.url), 'utf8');
 
 const HIDE = `*{animation:none!important;transition:none!important}
+.js [data-reveal]{opacity:1!important;transform:none!important}
 [class*="preFade"],[class*="preSlide"],[class*="preScale"],[class*="preClip"],[class*="preFlex"]{opacity:1!important;transform:none!important;clip-path:none!important}
 .sqs-cookie-banner-v2,[class*="cookie-banner"],#onetrust-banner-sdk{display:none!important}`;
 
@@ -30,9 +35,9 @@ for (const [label, viewport] of [['desktop', { width: 1440, height: 900 }], ['mo
   const page = await ctx.newPage();
   for (const path of paths) {
     const name = path === '/' ? 'index' : path.replace(/^\//, '');
-    await page.goto(base + path, { waitUntil: 'networkidle', timeout: 60000 }).catch(() => {});
+    await page.goto(base + urlFor(path), { waitUntil: 'networkidle', timeout: 60000 }).catch(() => {});
     await page.addStyleTag({ content: HIDE });
-    // Trigger lazy-loaded images.
+    // Trigger lazy-loaded images (and reveal-on-scroll blocks on the new site).
     const h = await page.evaluate(() => document.body.scrollHeight);
     for (let y = 0; y < h; y += 500) { await page.evaluate((y) => window.scrollTo(0, y), y); await page.waitForTimeout(80); }
     await page.evaluate(() => window.scrollTo(0, 0));

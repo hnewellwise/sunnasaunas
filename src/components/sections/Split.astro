@@ -21,18 +21,18 @@ const hasMedia = Boolean(s.image || s.aside);
 const sizes = { sm: '(min-width: 768px) 26vw, 88vw', md: '(min-width: 768px) 33vw, 88vw', lg: '(min-width: 768px) 40vw, 88vw' }[size];
 ---
 
-<SectionWrap theme={s.theme} pad={s.pad} id={s.id} class={s.curve ? 'curve' : undefined}>
-  <div class:list={['split', `img-${side}`, `size-${size}`, { 'no-media': !hasMedia }]}>
-    {s.heading && <H class="heading" data-reveal set:html={mdInline(s.heading, lang)} />}
+<SectionWrap theme={s.theme} height={s.height} id={s.id} class={s.curve ? 'curve' : undefined}>
+  <div class:list={['split', `img-${side}`, `size-${size}`, { 'no-media': !hasMedia, 'img-first-m': s.imageFirstMobile }]}>
+    {s.heading && <H class={`heading t-h${s.headingSize ?? s.level ?? 3}`} data-reveal set:html={mdInline(s.heading, lang)} />}
     {s.image && (
       <div class="media" data-reveal style={aspectVars(s.imageAspect, s.imageAspectMobile)}>
         <Img src={s.image.src} alt={s.image.alt ?? ''} sizes={sizes} class={`shape-${s.imageShape ?? 'rounded'}`} />
         {s.imageNote && <div class="note rte small" set:html={md(s.imageNote, lang)} />}
       </div>
     )}
-    {s.aside && <div class="media aside rte" data-reveal set:html={md(s.aside, lang)} />}
+    {s.aside && <div class:list={['media aside rte', s.bodySize]} data-reveal set:html={md(s.aside, lang)} />}
     <div class="copy" data-reveal>
-      {s.body && <div class="rte" set:html={md(s.body, lang)} />}
+      {s.body && <div class:list={['rte', s.bodySize]} set:html={md(s.body, lang)} />}
       {s.accordion && (
         <div class="accordion">
           {s.accordion.map((item, i) => (
@@ -156,6 +156,9 @@ const sizes = { sm: '(min-width: 768px) 26vw, 88vw', md: '(min-width: 768px) 33v
     .img-left {
       grid-template-areas: 'heading' 'media' 'copy';
       grid-template-columns: 1fr;
+    }
+    .img-first-m {
+      grid-template-areas: 'media' 'heading' 'copy';
     }
     .copy { max-width: none; }
     .media { margin-bottom: 24px; }

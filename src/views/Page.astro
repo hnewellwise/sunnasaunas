@@ -19,7 +19,7 @@ const hasBody = Boolean(entry.body?.replace(/<!--[\s\S]*?-->/g, '').trim());
 
 <Sections sections={entry.data.sections as Section[]} lang={lang} />
 {hasBody && (
-  <SectionWrap pad="md">
+  <SectionWrap height="auto">
     <article class="prose">
       <Content />
     </article>

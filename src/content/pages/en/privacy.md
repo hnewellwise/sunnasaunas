@@ -6,9 +6,12 @@ translationKey: privacy
 translationStatus: source
 sections:
   - type: split
+    height: md
     level: 1
+    headingSize: 2
     heading: Privacy policy.
     imageSize: lg
+    bodySize: large
     # FLAGGED: text copied verbatim from Squarespace (4/9/25). It names Google Analytics as the only
     # third party; the new site also uses OpnForm (forms) and Cloudflare (hosting). Owner to update.
     aside: |

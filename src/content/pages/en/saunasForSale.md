@@ -6,8 +6,10 @@ translationKey: saunasForSale
 translationStatus: source
 sections:
   - type: split
-    pad: lg
+    imageFirstMobile: true
+    height: md
     level: 1
+    headingSize: 2
     heading: Buy Your Own Sauna
     body: Love sauna as much as we do? We can build you your very own at your home in Portugal or Spain.
     image: { src: 20251006-183238.jpg }
@@ -18,8 +20,9 @@ sections:
       - { text: Get A Quote, href: "#quote", kind: tertiary }
 
   - type: split
-    pad: lg
+    height: lg
     level: 2
+    headingSize: 4
     heading: Premium Saunas for Homes & Retreats
     image: { src: whatsapp-image-2025-09-15-at-13.55.30.jpeg }
     imageAspect: 1.1
@@ -37,6 +40,7 @@ sections:
       Whether you’re creating a private wellness space or upgrading a guest offering, Sunna ensures every detail meets the highest standards.
 
   - type: cards
+    height: md
     variant: overlay
     items:
       - { title: Barrel Saunas, body: "from €2280", image: { src: 20251006-080917-2.jpg } }
@@ -45,9 +49,10 @@ sections:
     button: { text: Get A Quote, href: "#quote", kind: secondary }
 
   - type: split
+    height: lg
     theme: sage
-    pad: lg
     level: 2
+    headingSize: 4
     heading: Ready to Enjoy. Built to Last. Installed by Sunna.
     image: { src: whatsapp-image-2025-09-15-at-14.42.08.jpeg }
     imageAspect: 0.99
@@ -64,7 +69,9 @@ sections:
       The result is a sauna that arrives ready to use, performs beautifully from day one, and is built to handle daily life. Sunna manages delivery, installation, and guidance along the way.
 
   - type: split
+    height: md
     level: 2
+    headingSize: 4
     heading: Our Order Process
     image: { src: whatsapp-image-2025-09-15-at-09.57.11.jpeg }
     imageAspect: 0.97
@@ -78,6 +85,7 @@ sections:
       - **Sauna Care** - looking after your sauna is crucial, we’re here for advice, ongoing wood treatment, log supply and other services.
 
   - type: form
+    height: md
     id: quote
     theme: olive
     form: quote

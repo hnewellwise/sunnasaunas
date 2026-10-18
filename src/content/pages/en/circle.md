@@ -6,9 +6,11 @@ translationKey: circle
 translationStatus: source
 sections:
   - type: split
+    height: sm
     theme: clay
     curve: true
     level: 1
+    headingSize: 2
     heading: The Circle
     imageSize: lg
     aside: |
@@ -25,5 +27,6 @@ sections:
       Join us in exploring the warmth and connection that sauna brings to our lives.
 
   - type: collection
+    height: auto
     collection: circle
 ---

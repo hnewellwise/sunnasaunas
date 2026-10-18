@@ -3,6 +3,7 @@ import SectionWrap from './SectionWrap.astro';
 import Img from '../Img.astro';
 import type { GallerySection } from './types';
 import { loadImage } from '../../lib/images';
+import type { ImageMetadata } from 'astro';
 
 interface Props {
   section: GallerySection;
@@ -10,10 +11,12 @@ interface Props {
 
 // Justified-row photo gallery (Squarespace "gallery" section) with a native <dialog> lightbox.
 const { section: s } = Astro.props;
-const images = await Promise.all(s.images.map(async (i) => ({ ...i, meta: await loadImage(i.src) })));
+const images = await Promise.all(
+  s.images.map(async (i) => ({ ...i, meta: typeof i.src === 'string' ? await loadImage(i.src) : (i.src as ImageMetadata) })),
+);
 ---
 
-<SectionWrap theme={s.theme} pad={s.pad} id={s.id}>
+<SectionWrap theme={s.theme} height={s.height} id={s.id}>
   <ul class="gallery" data-gallery>
     {images.map((img, i) => (
       <li style={`--r:${(img.meta.width / img.meta.height).toFixed(3)}`}>

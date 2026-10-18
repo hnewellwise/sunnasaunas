@@ -7,6 +7,7 @@ import { pathFor } from '../../i18n/routes';
 import { entriesFor, slugOf } from '../../lib/content';
 import { md, mdInline } from '../../lib/markdown';
 import { formatDate } from '../../lib/dates';
+import CarouselArrows from '../CarouselArrows.astro';
 
 interface Props {
   section: LatestPostsSection;
@@ -18,7 +19,7 @@ const { section: s, lang } = Astro.props;
 const posts = (await entriesFor('circle', lang)).slice(0, 3);
 ---
 
-<SectionWrap theme={s.theme} pad={s.pad ?? 'sm'} id={s.id}>
+<SectionWrap theme={s.theme} height={s.height ?? 'auto'} id={s.id}>
   <div class="head" data-reveal>
     <h2 set:html={mdInline(s.heading, lang)} />
     {s.body && <div class="rte" set:html={md(s.body, lang)} />}
@@ -36,6 +37,7 @@ const posts = (await entriesFor('circle', lang)).slice(0, 3);
         </li>
       ))}
     </ul>
+    <CarouselArrows target="ul" />
   </div>
 </SectionWrap>
 
@@ -75,14 +77,14 @@ const posts = (await entriesFor('circle', lang)).slice(0, 3);
     text-decoration: none;
   }
   a :global(img) {
-    aspect-ratio: 1.66;
+    aspect-ratio: 1.5;
     width: 100%;
     object-fit: cover;
     margin-bottom: 12px;
   }
   .t {
     display: block;
-    font-size: 15px;
+    font-size: 17px;
     line-height: 1.2;
   }
   time {
@@ -97,8 +99,18 @@ const posts = (await entriesFor('circle', lang)).slice(0, 3);
       padding: 24px;
     }
     ul {
-      grid-template-columns: 1fr;
-      gap: 24px;
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      gap: 12px;
+    }
+    li {
+      flex: 0 0 46%;
+      scroll-snap-align: start;
+    }
+    .t {
+      font-size: 18px;
     }
   }
 </style>

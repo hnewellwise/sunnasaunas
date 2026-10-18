@@ -1,29 +1,37 @@
 ---
-import type { Theme } from './types';
+import type { Theme, SectionHeight } from './types';
 
 interface Props {
   theme?: Theme;
-  pad?: 'none' | 'sm' | 'md' | 'lg';
+  height?: SectionHeight;
   id?: string;
   class?: string;
 }
 
-const { theme = 'cream', pad = 'md', id, class: cls } = Astro.props;
+const { theme = 'cream', height = 'md', id, class: cls } = Astro.props;
 ---
 
-<section id={id} class:list={['section', `theme-${theme}`, `pad-${pad}`, cls]}>
-  <slot />
+<section id={id} class:list={['section', `theme-${theme}`, `h-${height}`, cls]}>
+  <div class="section-inner"><slot /></div>
 </section>
 
 <style>
+  /* Squarespace section heights (measured): min-height 33/66/100vh, content padding
+     max(n vw, n vh) with n = 3.3 / 6.6 / 10; content centred vertically. */
   .section {
     position: relative;
     padding-inline: var(--gutter);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
-  .pad-none { padding-block: 0; }
-  .pad-sm { padding-block: clamp(40px, 5vw, 72px); }
-  .pad-md { padding-block: clamp(56px, 8vw, 120px); }
-  .pad-lg { padding-block: clamp(72px, 12vw, 180px); }
+  .section-inner {
+    width: 100%;
+  }
+  .h-sm { min-height: 33vh; padding-block: max(3.3vw, 3.3vh); }
+  .h-md { min-height: 66vh; padding-block: max(6.6vw, 6.6vh); }
+  .h-lg { min-height: calc(100vh - var(--header-h)); padding-block: max(10vw, 10vh); }
+  .h-auto { padding-block: max(3.3vw, 3.3vh); }
 
   .theme-sage { --heading: #fff; --text: #fff; --link: #fff; }
   .theme-clay { --heading: var(--cream); --text: var(--cream); --link: var(--cream); }

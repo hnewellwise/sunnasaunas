@@ -14,7 +14,7 @@ interface Props {
 const { section: s, lang } = Astro.props;
 ---
 
-<SectionWrap theme={s.theme ?? 'olive'} pad={s.pad} id={s.id}>
+<SectionWrap theme={s.theme ?? 'olive'} height={s.height} id={s.id}>
   <div class="form-block">
     {s.heading && <h2 set:html={mdInline(s.heading, lang)} />}
     {s.body && <div class="rte" set:html={md(s.body, lang)} />}

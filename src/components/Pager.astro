@@ -1,0 +1,58 @@
+---
+interface Props {
+  prev?: { href: string; title: string };
+  next?: { href: string; title: string };
+  prevLabel: string;
+  nextLabel: string;
+}
+
+// Squarespace item pager: neighbouring items in list order, big sage titles with chevrons.
+const { prev, next, prevLabel, nextLabel } = Astro.props;
+---
+
+{(prev || next) && (
+  <nav class="pager" aria-label="Pagination">
+    {prev ? (
+      <a class="prev" href={prev.href} rel="prev"><span class="visually-hidden">{prevLabel}: </span>{prev.title}</a>
+    ) : <span />}
+    {next ? (
+      <a class="next" href={next.href} rel="next"><span class="visually-hidden">{nextLabel}: </span>{next.title}</a>
+    ) : <span />}
+  </nav>
+)}
+
+<style>
+  .pager {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4vw;
+    padding: clamp(48px, 7vw, 100px) var(--gutter);
+  }
+  a {
+    position: relative;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: var(--fs-h3);
+    line-height: 1.1;
+    letter-spacing: -0.05em;
+    color: var(--sage);
+    text-decoration: none;
+  }
+  .prev { padding-left: 1.2em; }
+  .next { padding-right: 1.2em; text-align: right; }
+  .prev::before,
+  .next::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 0.3em;
+    height: 0.3em;
+    border-left: 1px solid currentColor;
+    border-bottom: 1px solid currentColor;
+  }
+  .prev::before { left: 0.2em; transform: translateY(-50%) rotate(45deg); }
+  .next::after { right: 0.2em; transform: translateY(-50%) rotate(-135deg); }
+  @media (max-width: 767px) {
+    a { font-size: 22px; }
+  }
+</style>

@@ -7,8 +7,10 @@ translationStatus: source
 ogImage: ../../../assets/images/woosh-dos.jpg
 sections:
   - type: split
-    pad: lg
+    imageFirstMobile: true
+    height: md
     level: 1
+    headingSize: 2
     heading: Ice Bath Hire
     body: |
       Cold exposure that’s simple, effective, and easy to run.
@@ -25,8 +27,8 @@ sections:
       - { text: Contact Us, href: "page:contact" }
 
   - type: split
+    height: sm
     theme: sage
-    pad: sm
     heading: Portable Ice Bath for Events & Retreats
     image: { src: img-3096.jpeg }
     imageAspect: 1.08
@@ -39,6 +41,8 @@ sections:
       Each setup is practical and robust, making it easy for guests to cycle through sessions without slowing the flow of your event. Whether you’re hosting a small group or a larger gathering, ice baths add a clear recovery and contrast element that people immediately understand and value.
 
   - type: split
+    imageFirstMobile: true
+    height: md
     heading: What’s Included in Ice Bath Rental
     image: { src: img-3020-2.jpg }
     imageAspect: 0.82
@@ -58,7 +62,7 @@ sections:
       If you’re running a longer event, we can help plan water changes, ice top-ups,.
 
   - type: split
-    pad: sm
+    height: sm
     heading: Ice Bath for Recovery & Contrast Therapy
     image: { src: img-3013.jpeg }
     imageAspect: 0.68
@@ -75,6 +79,7 @@ sections:
       Ice bath hire is often booked alongside our mobile sauna setups. The combination works especially well for retreats, surf camps, festivals, and multi-day events where guests move between heat and cold at their own pace.
 
   - type: cta
+    height: md
     heading: Pricing & Booking
     body: |
       Pricing depends on the number of ice baths, length of hire, location, and whether you’re combining ice baths with sauna hire. Both short-term and multi-day bookings are available.

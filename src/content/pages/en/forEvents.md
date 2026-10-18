@@ -6,8 +6,10 @@ translationKey: forEvents
 translationStatus: source
 sections:
   - type: split
-    pad: lg
+    imageFirstMobile: true
+    height: md
     level: 1
+    headingSize: 2
     heading: Sauna Hire for Events
     body: |
       Let The Heat Speak.
@@ -21,8 +23,8 @@ sections:
     imageSize: md
 
   - type: split
+    height: sm
     theme: sage
-    pad: sm
     heading: Why you’ll love it ?
     image: { src: img-3027.jpeg }
     imageAspect: 0.95
@@ -39,6 +41,7 @@ sections:
       - **High satisfaction for clients.** Saunas build communities and encourage repeat bookings.
 
   - type: split
+    height: sm
     heading: Why people love it ?
     image: { src: whatsapp-image-2025-10-21-at-13.26.21-3-.jpeg }
     imageAspect: 0.88
@@ -53,7 +56,7 @@ sections:
       - **Moments that connect**. The shared warmth, the stillness — people open up, and new connections happen naturally.
 
   - type: gallery
-    pad: sm
+    height: auto
     images:
       - { src: 20251006-080742.jpg }
       - { src: 20251005-110207-1--693be139.jpg }
@@ -64,6 +67,7 @@ sections:
       - { src: 20251108-171434.jpg }
 
   - type: cta
+    height: md
     heading: Let's Make It Happen
     body: |
       We tailor each booking to your space, your people, your rhythm.

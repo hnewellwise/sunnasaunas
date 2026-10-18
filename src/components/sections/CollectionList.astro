@@ -19,7 +19,7 @@ const { section: s, lang } = Astro.props;
 const entries = await entriesFor(s.collection, lang);
 ---
 
-<SectionWrap theme={s.theme} pad={s.pad} id={s.id}>
+<SectionWrap theme={s.theme} height={s.height} id={s.id}>
   {s.collection === 'circle' ? (
     <ul class="posts">
       {entries.map((e) => {
