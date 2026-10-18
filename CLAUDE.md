@@ -72,6 +72,8 @@ Content conventions:
 
 ## Status (2026-10-18)
 
+Preview: https://sunnasaunas.harry-b68.workers.dev (Workers Builds, branch `astro-migration`; moves to `main` after sign-off). Next steps and the owner's sign-off checklist: `MIGRATION.md`.
+
 Done: replica of every page (desktop + mobile measured against live), 5 posts, 4 case studies, redirects, SEO parity, PT/FR/ES drafts of everything (`machine-draft`, unpublished). Open items for the owner are listed in `MIGRATION.md` → "Flagged for owner".
 
 Scripts used for the migration (kept for reproducibility): `scripts/scrape-squarespace.mjs`, `scripts/lib/port-posts.py` (blog JSON → Markdown, overwrites EN posts), `scripts/lib/html2md.py`, `scripts/lib/hard-breaks.py`.
