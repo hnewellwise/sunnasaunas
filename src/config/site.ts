@@ -15,9 +15,11 @@ export const site = {
    * forms: "contact" (Get In Touch) and "quote" (Purchase A Sauna, on /saunas-for-sale).
    * Create them in OpnForm, then paste the slug from the share URL https://opnform.com/forms/<slug>.
    * A missing locale falls back to the English form; null everywhere = email fallback.
+   * Fields are read from OpnForm at build time and rendered natively (src/lib/opnform.ts), so
+   * rebuild after editing a form in OpnForm. Submissions still land in OpnForm.
    */
   opnform: {
-    contact: { en: null, pt: null, fr: null, es: null },
-    quote: { en: null, pt: null, fr: null, es: null },
+    contact: { en: 'contact-form-lqdxic', pt: null, fr: null, es: null },
+    quote: { en: 'sunna-purchase-ahlc8r', pt: null, fr: null, es: null },
   } as Record<'contact' | 'quote', Record<Locale, string | null>>,
 };

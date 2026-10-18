@@ -2,19 +2,72 @@
 import { site } from '../config/site';
 import { t } from '../i18n/ui';
 import type { Locale } from '../i18n/config';
+import { loadOpnForm, OPNFORM_API } from '../lib/opnform';
 
 interface Props {
   lang: Locale;
   form: 'contact' | 'quote';
 }
 
+// Native form built from the OpnForm schema at build time, styled like the Squarespace form it
+// replaces. Falls back to OpnForm's iframe embed if the schema can't be loaded.
 const { lang, form } = Astro.props;
 const forms = site.opnform[form];
 const slug = forms[lang] ?? forms.en;
+const schema = slug ? await loadOpnForm(slug) : null;
+const submitLabel = schema?.submitText ?? t(lang, form === 'quote' ? 'form.quote' : 'form.submit');
+
+const inputType = { text: 'text', email: 'email', phone_number: 'tel', number: 'number', url: 'url', date: 'date' } as const;
+const autocomplete: Record<string, string> = { email: 'email', phone_number: 'tel' };
 ---
 
-{slug ? (
-  <div class="opnform">
+{schema ? (
+  <form
+    class:list={['opnform', `opnform--${form}`]}
+    data-opnform={`${OPNFORM_API}/forms/${schema.slug}/answer`}
+    data-sending={t(lang, 'form.sending')}
+    novalidate
+  >
+    {schema.fields.map((f) => (
+      <div class="field">
+        <label for={`${form}-${f.id}`}>
+          {f.name}
+          {f.required && <span class="req">({t(lang, 'form.required')})</span>}
+        </label>
+        {f.help && <p class="help" id={`${form}-${f.id}-help`}>{f.help}</p>}
+        {f.type === 'text' && f.multiLines ? (
+          <textarea
+            id={`${form}-${f.id}`}
+            name={f.id}
+            rows="4"
+            required={f.required}
+            placeholder={f.placeholder ?? undefined}
+            aria-describedby={f.help ? `${form}-${f.id}-help` : undefined}
+          />
+        ) : (
+          <input
+            id={`${form}-${f.id}`}
+            name={f.id}
+            type={inputType[f.type]}
+            required={f.required}
+            placeholder={f.placeholder ?? undefined}
+            autocomplete={autocomplete[f.type] ?? (/name/i.test(f.name) ? 'name' : undefined)}
+            aria-describedby={f.help ? `${form}-${f.id}-help` : undefined}
+          />
+        )}
+        <p class="error" data-error-for={f.id} hidden></p>
+      </div>
+    ))}
+    {/* Honeypot: bots fill every field; people never see this one. */}
+    <input class="hp" type="text" name="_hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+    <button type="submit" class="submit">{submitLabel}</button>
+    <p class="error form-error" hidden>
+      {t(lang, 'form.error')} <a href={`mailto:${site.email}`}>{site.email}</a>
+    </p>
+    <div class="success" role="status" tabindex="-1" hidden set:html={schema.submittedText} />
+  </form>
+) : slug ? (
+  <div class="opnform-embed">
     <iframe
       id={slug}
       src={`https://opnform.com/forms/${slug}`}
@@ -33,8 +86,183 @@ const slug = forms[lang] ?? forms.en;
   </p>
 )}
 
+<script>
+  // OpnForm wants phone numbers in international format; most visitors are in Portugal.
+  const normalizePhone = (v: string) => {
+    const s = v.replace(/[\s().-]/g, '').replace(/^00/, '+');
+    return !s || s.startsWith('+') ? s : `+351${s}`;
+  };
+
+  for (const form of document.querySelectorAll<HTMLFormElement>('form[data-opnform]')) {
+    const button = form.querySelector<HTMLButtonElement>('.submit')!;
+    const formError = form.querySelector<HTMLElement>('.form-error')!;
+    const success = form.querySelector<HTMLElement>('.success')!;
+    const label = button.textContent;
+
+    const showErrors = (errors: Record<string, string[]>) => {
+      let first: HTMLElement | null = null;
+      for (const el of form.querySelectorAll<HTMLElement>('[data-error-for]')) {
+        const msg = errors[el.dataset.errorFor!]?.[0];
+        el.textContent = msg ?? '';
+        el.hidden = !msg;
+        const input = form.elements.namedItem(el.dataset.errorFor!) as HTMLElement | null;
+        input?.setAttribute('aria-invalid', String(!!msg));
+        if (msg && !first) first = input;
+      }
+      first?.focus();
+    };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      formError.hidden = true;
+
+      // Browser-side check first so people get instant, localized messages.
+      const local: Record<string, string[]> = {};
+      for (const el of form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('input[name]:not(.hp), textarea[name]')) {
+        if (!el.checkValidity()) local[el.name] = [el.validationMessage];
+      }
+      showErrors(local);
+      if (Object.keys(local).length) return;
+
+      const data: Record<string, string> = {};
+      for (const [k, v] of new FormData(form)) {
+        if (k === '_hp') continue;
+        const el = form.elements.namedItem(k) as HTMLInputElement;
+        data[k] = el.type === 'tel' ? normalizePhone(String(v)) : String(v).trim();
+      }
+      if ((form.elements.namedItem('_hp') as HTMLInputElement).value) return;
+
+      button.disabled = true;
+      button.textContent = form.dataset.sending!;
+      try {
+        const res = await fetch(form.dataset.opnform!, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify(data),
+        });
+        const body = await res.json().catch(() => ({}));
+        if (res.status === 422 && body.errors) {
+          showErrors(body.errors);
+        } else if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`);
+        } else {
+          for (const el of form.children) (el as HTMLElement).hidden = el !== success;
+          success.hidden = false;
+          success.focus();
+          (window as any).gtag?.('event', 'generate_lead', { form_id: form.classList[1] });
+        }
+      } catch {
+        formError.hidden = false;
+      } finally {
+        button.disabled = false;
+        button.textContent = label;
+      }
+    });
+  }
+</script>
+
 <style>
   .opnform {
+    --ink: var(--sage);
+    margin-top: 24px;
+    display: grid;
+    gap: 20px;
+    color: var(--ink);
+  }
+  :global(.theme-olive) .opnform {
+    --ink: var(--cream);
+  }
+  label {
+    display: block;
+    font-size: var(--fs-small);
+    margin-bottom: 8px;
+  }
+  .req {
+    opacity: 0.6;
+    font-size: 0.9em;
+    margin-left: 0.5em;
+  }
+  .help {
+    font-size: 0.9em;
+    opacity: 0.75;
+    margin: -2px 0 10px;
+  }
+  input,
+  textarea {
+    display: block;
+    width: 100%;
+    font: inherit;
+    font-size: var(--fs-body);
+    color: inherit;
+    background: transparent;
+    border: 1px solid var(--ink);
+    border-radius: 300px;
+    padding: 0.7em 1.2em;
+  }
+  textarea {
+    border-radius: 20px;
+    min-height: 100px;
+    resize: vertical;
+  }
+  input::placeholder,
+  textarea::placeholder {
+    color: inherit;
+    opacity: 0.5;
+  }
+  input:focus-visible,
+  textarea:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 1px;
+  }
+  [aria-invalid='true'] {
+    border-color: var(--clay);
+  }
+  .error {
+    color: var(--clay);
+    font-size: 0.9em;
+    margin: 6px 0 0;
+  }
+  :global(.theme-olive) .error {
+    color: var(--cream);
+  }
+  .form-error a {
+    color: inherit;
+  }
+  .hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+  }
+  .submit {
+    justify-self: start;
+    font: inherit;
+    font-size: var(--fs-small);
+    padding: 1.1em 1.5em;
+    border: 0;
+    border-radius: 300px;
+    background: var(--olive);
+    color: var(--cream);
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+  }
+  .submit:hover {
+    opacity: 0.8;
+  }
+  .submit:disabled {
+    opacity: 0.6;
+    cursor: progress;
+  }
+  :global(.theme-olive) .submit {
+    justify-self: stretch;
+    background: var(--cream);
+    color: var(--olive);
+  }
+  .success {
+    font-size: var(--fs-large);
+    outline: none;
+  }
+  .opnform-embed {
     margin-top: 24px;
   }
   .opnform-fallback {
