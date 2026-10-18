@@ -17,7 +17,7 @@ Squarespace → Astro on Cloudflare. Last updated **2026-10-18**.
 | URLs + redirects | ✅ English URLs identical to Squarespace; all 20 old URLs pass on the preview |
 | SEO | ✅ Titles/descriptions match live, canonical, hreflang, sitemap, social images, structured data |
 | Translations PT / FR / ES | 🟡 Drafted (54 files), awaiting native review; not published |
-| Contact + quote forms | 🟡 Live on the preview (native, site-styled OpnForm forms); test submissions pending |
+| Contact + quote forms | ✅ Live on the preview (native, site-styled OpnForm forms with reCAPTCHA); tested by owner |
 | Privacy policy / cookie consent | 🔴 Needs your update before launch |
 | Hosting | 🟡 Cloudflare Worker `sunnasaunas` live on workers.dev; no domain attached |
 | DNS / cutover | ⚪ Not started (Steps 3–5 below) |
@@ -29,7 +29,7 @@ Workers & Pages → `sunnasaunas` → Settings → Builds:
 
 ## Completed: build and stage ✅
 
-Completed on 2026-10-18: replica built, content migrated, `npm run check:redirects` all ✓ on the preview, Worker deployed. Remaining from this step: submit a test enquiry through each OpnForm form on the preview and confirm the notification email arrives.
+Completed on 2026-10-18: replica built, content migrated, `npm run check:redirects` all ✓ on the preview, Worker deployed. Both OpnForm forms tested by the owner on the preview.
 
 ---
 
@@ -68,8 +68,8 @@ Devices: iPhone (Safari), Android (Chrome), desktop Chrome + Safari (+ Firefox i
 
 ### 1d. Your actions before launch
 - [x] **OpnForm**: `contact` and `quote` forms created and live on the preview (2026-10-18).
-- [ ] **OpnForm tidy-up + test**: submit a test through each form; replace default placeholders and thank-you text in OpnForm (see "Needs your action" below).
-- [ ] **Privacy policy**: update for OpnForm + Cloudflare (all four languages).
+- [x] **OpnForm tidy-up + test**: forms tested, thank-you text updated, reCAPTCHA on (default placeholders kept by choice).
+- [ ] **Privacy policy**: update for OpnForm, Google reCAPTCHA + Cloudflare (all four languages).
 - [ ] **Cookie consent**: choose a GA4 consent banner or switch to cookieless Cloudflare Web Analytics.
 - [ ] **Translations**: native review of PT (priority), then FR and ES.
 - [ ] Feedback from the test pass collected and fixed.
@@ -156,13 +156,10 @@ Canonical host stays **`https://www.sunnasaunas.com`**. English URLs stay **iden
 - No AI-generated or recreated images anywhere; every photo in `src/assets/images/` is an unmodified original from the Squarespace CDN.
 
 ### Needs your action before launch
-- **OpnForm** ✅ forms created and wired in (2026-10-18): `contact-form-lqdxic` (Get In Touch) and `sunna-purchase-ahlc8r` (Purchase A Sauna), set in `src/config/site.ts` → `opnform`. The site reads each form's fields from OpnForm at build time and renders them in the site's own styling (`src/lib/opnform.ts`, `src/components/OpnForm.astro`); submissions still land in OpnForm. **Edit a form in OpnForm → push or re-run the build to pick up the change.** If OpnForm can't be reached at build time, or a form uses a field type the site doesn't render (dropdowns, checkboxes, file uploads), that form falls back to the standard OpnForm embed. Still to do:
-  - Submit a test enquiry through each form on the preview and confirm the notification email arrives.
-  - In OpnForm, replace the default placeholders ("Enter your full name", "+1 202 555 0142", "Type your answer") and the default thank-you text.
+- **OpnForm** ✅ forms created and wired in (2026-10-18): `contact-form-lqdxic` (Get In Touch) and `sunna-purchase-ahlc8r` (Purchase A Sauna), set in `src/config/site.ts` → `opnform`. The site reads each form's fields from OpnForm at build time and renders them in the site's own styling (`src/lib/opnform.ts`, `src/components/OpnForm.astro`); submissions still land in OpnForm. **Edit a form in OpnForm → push or re-run the build to pick up the change.** If OpnForm can't be reached at build time, or a form uses a field type the site doesn't render (dropdowns, checkboxes, file uploads), that form falls back to the standard OpnForm embed. Tested by the owner, thank-you text updated, placeholders kept as they are. **reCAPTCHA** is on in OpnForm for both forms; the site shows Google's "I'm not a robot" checkbox (OpnForm's public site key, `OPNFORM_RECAPTCHA_SITE_KEY` in `src/lib/opnform.ts`) and sends the token with the answer. Turning captcha off in OpnForm removes it on the next build; switching OpnForm to hCaptcha makes the site fall back to the embed until hCaptcha is supported. A hidden honeypot field also blocks basic bots. Still to do:
   - Optional per-language versions (PT/FR/ES); until then the English form (English labels) is used on every language.
-  - No captcha yet (a hidden honeypot field blocks basic bots). If spam arrives, enable OpnForm's captcha; the native form will need updating to support it.
   - Export any past form submissions from Squarespace before cancelling.
-- **Privacy policy** (all languages): copied verbatim from Squarespace (last updated 4/9/25). It says Google Analytics is the only third party; the new site also uses **OpnForm** (form data) and **Cloudflare** (hosting/CDN). Needs updating by you.
+- **Privacy policy** (all languages): copied verbatim from Squarespace (last updated 4/9/25). It says Google Analytics is the only third party; the new site also uses **OpnForm** (form data), **Google reCAPTCHA** (spam protection on the forms) and **Cloudflare** (hosting/CDN). Needs updating by you.
 - **Cookie consent**: Squarespace showed a cookie banner; the new site loads GA4 without one. Under GDPR, choose either a consent banner (GA consent mode) or switch to cookieless Cloudflare Web Analytics (no banner needed). Until then consider this a launch blocker.
 - **Translations**: 54 drafted files (PT pt-PT, FR, ES) are `machine-draft` and not published. Review, set `translationStatus: reviewed`, then follow Step 6. `node scripts/check-translations.mjs` shows what's left.
 

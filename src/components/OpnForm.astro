@@ -2,7 +2,7 @@
 import { site } from '../config/site';
 import { t } from '../i18n/ui';
 import type { Locale } from '../i18n/config';
-import { loadOpnForm, OPNFORM_API } from '../lib/opnform';
+import { loadOpnForm, OPNFORM_API, OPNFORM_RECAPTCHA_SITE_KEY } from '../lib/opnform';
 
 interface Props {
   lang: Locale;
@@ -27,6 +27,7 @@ const autocomplete: Record<string, string> = { email: 'email', phone_number: 'te
     data-opnform={`${OPNFORM_API}/forms/${schema.slug}/answer`}
     data-sending={t(lang, 'form.sending')}
     data-phone-hint={t(lang, 'form.phoneHint')}
+    data-captcha-msg={t(lang, 'form.captcha')}
     novalidate
   >
     {schema.fields.map((f) => (
@@ -61,6 +62,12 @@ const autocomplete: Record<string, string> = { email: 'email', phone_number: 'te
     ))}
     {/* Honeypot: bots fill every field; people never see this one. */}
     <input class="hp" type="text" name="_hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+    {schema.recaptcha && (
+      <div class="field">
+        <div class="captcha" data-sitekey={OPNFORM_RECAPTCHA_SITE_KEY} data-lang={lang} />
+        <p class="error" data-error-for="g-recaptcha-response" hidden></p>
+      </div>
+    )}
     <button type="submit" class="submit">{submitLabel}</button>
     <p class="error form-error" hidden>
       {t(lang, 'form.error')} <a href={`mailto:${site.email}`}>{site.email}</a>
@@ -88,11 +95,50 @@ const autocomplete: Record<string, string> = { email: 'email', phone_number: 'te
 )}
 
 <script>
+  // reCAPTCHA (when the form has captcha on in OpnForm). Google's script only loads once the form
+  // is near the viewport, so other pages and the top of the page stay free of it.
+  type Grecaptcha = {
+    render: (el: HTMLElement, opts: object) => number;
+    getResponse: (id: number) => string;
+    reset: (id: number) => void;
+  };
+  let recaptchaReady: Promise<Grecaptcha> | undefined;
+  const loadRecaptcha = (lang: string) =>
+    (recaptchaReady ??= new Promise((resolve, reject) => {
+      (window as any).__sunnaRecaptcha = () => resolve((window as any).grecaptcha);
+      const s = document.createElement('script');
+      s.src = `https://www.google.com/recaptcha/api.js?onload=__sunnaRecaptcha&render=explicit&hl=${lang}`;
+      s.async = true;
+      s.onerror = reject;
+      document.head.appendChild(s);
+    }));
+
   for (const form of document.querySelectorAll<HTMLFormElement>('form[data-opnform]')) {
     const button = form.querySelector<HTMLButtonElement>('.submit')!;
     const formError = form.querySelector<HTMLElement>('.form-error')!;
     const success = form.querySelector<HTMLElement>('.success')!;
     const label = button.textContent;
+
+    const captchaEl = form.querySelector<HTMLElement>('.captcha');
+    let captcha: { api: Grecaptcha; id: number } | undefined;
+    if (captchaEl) {
+      const mount = () =>
+        loadRecaptcha(captchaEl.dataset.lang!).then((api) => {
+          if (captcha) return;
+          const theme = form.closest('.theme-olive') ? 'dark' : 'light';
+          captcha = { api, id: api.render(captchaEl, { sitekey: captchaEl.dataset.sitekey, theme }) };
+        });
+      new IntersectionObserver(
+        (entries, io) => {
+          if (entries.some((e) => e.isIntersecting)) {
+            io.disconnect();
+            mount();
+          }
+        },
+        { rootMargin: '600px' },
+      ).observe(form);
+      form.addEventListener('focusin', mount, { once: true });
+    }
 
     const showErrors = (errors: Record<string, string[]>) => {
       let first: HTMLElement | null = null;
@@ -117,6 +163,8 @@ const autocomplete: Record<string, string> = { email: 'email', phone_number: 'te
       for (const el of form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('input[name]:not(.hp), textarea[name]')) {
         if (!el.checkValidity()) local[el.name] = [el.validationMessage];
       }
+      const token = captcha ? captcha.api.getResponse(captcha.id) : '';
+      if (captchaEl && !token) local['g-recaptcha-response'] = [form.dataset.captchaMsg!];
       showErrors(local);
       if (Object.keys(local).length) return;
 
@@ -125,6 +173,7 @@ const autocomplete: Record<string, string> = { email: 'email', phone_number: 'te
         if (k === '_hp') continue;
         data[k] = String(v).trim();
       }
+      if (captchaEl) data['g-recaptcha-response'] = token;
       if ((form.elements.namedItem('_hp') as HTMLInputElement).value) return;
 
       button.disabled = true;
@@ -149,6 +198,8 @@ const autocomplete: Record<string, string> = { email: 'email', phone_number: 'te
       } catch {
         formError.hidden = false;
       } finally {
+        // Tokens are single-use: a rejected submission needs a fresh tick.
+        if (captcha && success.hidden) captcha.api.reset(captcha.id);
         button.disabled = false;
         button.textContent = label;
       }
@@ -228,6 +279,9 @@ const autocomplete: Record<string, string> = { email: 'email', phone_number: 'te
     left: -9999px;
     width: 1px;
     height: 1px;
+  }
+  .captcha {
+    min-height: 78px;
   }
   .submit {
     justify-self: start;

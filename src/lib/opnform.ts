@@ -7,6 +7,12 @@
 
 export const OPNFORM_API = 'https://api.opnform.com';
 
+/**
+ * OpnForm's public reCAPTCHA v2 site key (from opnform.com's own page config). Its domain check
+ * is off, so the widget works on our domain and OpnForm verifies the token server-side.
+ */
+export const OPNFORM_RECAPTCHA_SITE_KEY = '6LeYjJ8qAAAAANk4sx1iElecEFHqGhXxPP_RnvkF';
+
 export interface OpnField {
   id: string;
   name: string;
@@ -22,6 +28,8 @@ export interface OpnFormSchema {
   fields: OpnField[];
   submitText: string | null;
   submittedText: string;
+  /** "Protect with captcha" is on in OpnForm; the answer must carry a g-recaptcha-response. */
+  recaptcha: boolean;
 }
 
 const SUPPORTED = new Set(['text', 'email', 'phone_number', 'number', 'url', 'date']);
@@ -44,6 +52,11 @@ async function fetchSchema(slug: string): Promise<OpnFormSchema | null> {
     form = await res.json();
   } catch (err) {
     console.warn(`[opnform] ${slug}: could not load schema (${err}), using iframe embed`);
+    return null;
+  }
+
+  if (form.use_captcha && form.captcha_provider !== 'recaptcha') {
+    console.warn(`[opnform] ${slug}: captcha provider "${form.captcha_provider}" not supported natively, using iframe embed`);
     return null;
   }
 
@@ -71,5 +84,6 @@ async function fetchSchema(slug: string): Promise<OpnFormSchema | null> {
     fields,
     submitText: form.submit_button_text || null,
     submittedText: form.submitted_text || '',
+    recaptcha: !!form.use_captcha,
   };
 }
