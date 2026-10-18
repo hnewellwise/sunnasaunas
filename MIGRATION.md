@@ -17,7 +17,7 @@ Squarespace → Astro on Cloudflare. Last updated **2026-10-18**.
 | URLs + redirects | ✅ English URLs identical to Squarespace; all 20 old URLs pass on the preview |
 | SEO | ✅ Titles/descriptions match live, canonical, hreflang, sitemap, social images, structured data |
 | Translations PT / FR / ES | 🟡 Drafted (54 files), awaiting native review; not published |
-| Contact + quote forms | 🔴 Waiting on OpnForm setup (pages show an email fallback until then) |
+| Contact + quote forms | 🟡 Live on the preview (native, site-styled OpnForm forms); test submissions pending |
 | Privacy policy / cookie consent | 🔴 Needs your update before launch |
 | Hosting | 🟡 Cloudflare Worker `sunnasaunas` live on workers.dev; no domain attached |
 | DNS / cutover | ⚪ Not started (Steps 3–5 below) |
@@ -29,7 +29,7 @@ Workers & Pages → `sunnasaunas` → Settings → Builds:
 
 ## Completed: build and stage ✅
 
-Completed on 2026-10-18: replica built, content migrated, `npm run check:redirects` all ✓ on the preview, Worker deployed. Remaining from this step: submit a test enquiry through each OpnForm form on the preview once they're set up and confirm the notification email arrives.
+Completed on 2026-10-18: replica built, content migrated, `npm run check:redirects` all ✓ on the preview, Worker deployed. Remaining from this step: submit a test enquiry through each OpnForm form on the preview and confirm the notification email arrives.
 
 ---
 
@@ -48,8 +48,8 @@ Devices: iPhone (Safari), Android (Chrome), desktop Chrome + Safari (+ Firefox i
 | How It Works `/en/about` | Oval photo; Step-by-step; What's Included; prices; extras table; cancellation + delivery |
 | For Events `/en/for-events` | Text/photo sections; **gallery: tap a photo → lightbox, arrows, close** |
 | Ice Bath `/en/ice-bath` | Sections + Contact button |
-| Buy a Sauna `/en/saunas-for-sale` | Product tiles with prices; **Get A Quote** buttons jump to the form section |
-| Contact `/en/contact` | Copy, email + Instagram links (form appears once OpnForm is set up) |
+| Buy a Sauna `/en/saunas-for-sale` | Product tiles with prices; **Get A Quote** buttons jump to the form section; quote form submits |
+| Contact `/en/contact` | Copy, email + Instagram links; contact form submits and shows the thank-you message |
 | Our Work `/en/our-work` | 2×2 project grid (desktop: hover shows the name) → each project gallery + lightbox + previous/next |
 | The Circle `/en/the-circle` | Curved clay header; post list; each post: images, gallery row, captions, links, previous/next |
 | Privacy `/en/privacy-policy` | Text |
@@ -67,7 +67,8 @@ Devices: iPhone (Safari), Android (Chrome), desktop Chrome + Safari (+ Firefox i
 - [ ] **Alt text** for images: add before launch or after?
 
 ### 1d. Your actions before launch
-- [ ] **OpnForm**: create the `contact` and `quote` forms, then send me the slugs (spec in "Needs your action" below).
+- [x] **OpnForm**: `contact` and `quote` forms created and live on the preview (2026-10-18).
+- [ ] **OpnForm tidy-up + test**: submit a test through each form; replace default placeholders and thank-you text in OpnForm (see "Needs your action" below).
 - [ ] **Privacy policy**: update for OpnForm + Cloudflare (all four languages).
 - [ ] **Cookie consent**: choose a GA4 consent banner or switch to cookieless Cloudflare Web Analytics.
 - [ ] **Translations**: native review of PT (priority), then FR and ES.
@@ -155,10 +156,11 @@ Canonical host stays **`https://www.sunnasaunas.com`**. English URLs stay **iden
 - No AI-generated or recreated images anywhere; every photo in `src/assets/images/` is an unmodified original from the Squarespace CDN.
 
 ### Needs your action before launch
-- **OpnForm**: create two forms on opnform.com and paste their slugs into `src/config/site.ts` → `opnform`:
-  - `contact` (Get In Touch): First name*, Last name*, Email*, "Sign up for news and updates" checkbox, Phone, Message* ("Give us some detail about your request"), button "Submit".
-  - `quote` (Purchase A Sauna, on /saunas-for-sale): the same, plus Country + Phone number, Your Location*, Message* ("If you already know the shape, size, oven type, windows then tell us here…"), button "Get A Quote".
-  - Optional per-language versions (PT/FR/ES); otherwise the English form is embedded on every language. Until a slug is set the page shows "Email us at hello@sunnasaunas.com".
+- **OpnForm** ✅ forms created and wired in (2026-10-18): `contact-form-lqdxic` (Get In Touch) and `sunna-purchase-ahlc8r` (Purchase A Sauna), set in `src/config/site.ts` → `opnform`. The site reads each form's fields from OpnForm at build time and renders them in the site's own styling (`src/lib/opnform.ts`, `src/components/OpnForm.astro`); submissions still land in OpnForm. **Edit a form in OpnForm → push or re-run the build to pick up the change.** If OpnForm can't be reached at build time, or a form uses a field type the site doesn't render (dropdowns, checkboxes, file uploads), that form falls back to the standard OpnForm embed. Still to do:
+  - Submit a test enquiry through each form on the preview and confirm the notification email arrives.
+  - In OpnForm, replace the default placeholders ("Enter your full name", "+1 202 555 0142", "Type your answer") and the default thank-you text.
+  - Optional per-language versions (PT/FR/ES); until then the English form (English labels) is used on every language.
+  - No captcha yet (a hidden honeypot field blocks basic bots). If spam arrives, enable OpnForm's captcha; the native form will need updating to support it.
   - Export any past form submissions from Squarespace before cancelling.
 - **Privacy policy** (all languages): copied verbatim from Squarespace (last updated 4/9/25). It says Google Analytics is the only third party; the new site also uses **OpnForm** (form data) and **Cloudflare** (hosting/CDN). Needs updating by you.
 - **Cookie consent**: Squarespace showed a cookie banner; the new site loads GA4 without one. Under GDPR, choose either a consent banner (GA consent mode) or switch to cookieless Cloudflare Web Analytics (no banner needed). Until then consider this a launch blocker.

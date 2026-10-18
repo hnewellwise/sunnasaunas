@@ -8,7 +8,7 @@ Squarespace site. Cutover steps live in `MIGRATION.md`.
 - Astro 7, static output, `build.format: 'file'` + `trailingSlash: 'never'` (URLs have no trailing slash, matching Squarespace)
 - Cloudflare Workers static assets (`wrangler.jsonc`), with redirects in `public/_redirects` and headers in `public/_headers`
 - Content as Markdown in `src/content/`, editable via GitHub
-- Contact form: hosted OpnForm embed (`src/components/OpnForm.astro`, slugs in `src/config/site.ts`)
+- Forms: OpnForm, rendered natively from its schema at build time and posted to its API (`src/lib/opnform.ts`, `src/components/OpnForm.astro`, slugs in `src/config/site.ts`); falls back to the iframe embed
 - Node ≥ 22.12. Agents: run the dev server with `astro dev --background` (`astro dev stop|status|logs`)
 
 ```
