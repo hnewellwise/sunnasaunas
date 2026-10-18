@@ -1,6 +1,6 @@
 ---
 title: "How to Recover Faster with Sauna Sessions"
-seoTitle: "How To Recover Faster With Sauna Sessions"
+seoTitle: "How To Recover Faster With Sauna Sessions — Sunna"
 description: "Discover how sauna sessions boost recovery, reduce muscle soreness, and improve performance. Science-backed tips for athletes and active bodies."
 translationKey: how-to-recover-faster-with-sauna-sessions
 translationStatus: source

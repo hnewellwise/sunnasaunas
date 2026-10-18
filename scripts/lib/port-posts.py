@@ -13,6 +13,10 @@ def local(url):
     raise SystemExit(f'image not in snapshot: {u}')
 
 IMG_REL = '../../../assets/images/'
+# Written for posts that had no SEO description or excerpt on Squarespace.
+DESCRIPTIONS = {
+    'the-perfect-sauna-routine-for-beginners': 'A simple beginner’s guide to sauna: how to prepare, what to expect in your first session, and tips for a great sauna experience.',
+}
 def q(s): return json.dumps(s or '', ensure_ascii=False)
 
 def convert_body(body):
@@ -47,14 +51,15 @@ for f in sorted(glob.glob('migration/snapshot/json/en/the-circle/*.json')):
     slug = it['urlId']
     pub = datetime.datetime.fromtimestamp(it['publishOn'] / 1000, datetime.UTC).date().isoformat()
     seo = (it.get('seoData') or {})
-    desc = seo.get('seoDescription') or html2md(it.get('excerpt') or '')
+    desc = seo.get('seoDescription') or html2md(it.get('excerpt') or '') or DESCRIPTIONS.get(it['urlId'], '')
     hero = local(it['assetUrl'])
     body = convert_body(it.get('body') or '')
     # heroImage is the listing thumbnail (Squarespace assetUrl); the post page shows only the body.
     fm = [
         '---',
         f'title: {q(it["title"])}',
-        f'seoTitle: {q(seo.get("seoTitle") or (it["title"] + " — Sunna"))}',
+        # Squarespace appends " — Sunna" to every page title, custom SEO titles included.
+        f'seoTitle: {q((seo.get("seoTitle") or it["title"]).strip() + " — Sunna")}',
         f'description: {q(re.sub(r"\s+", " ", desc).strip())}',
         f'translationKey: {slug}',
         'translationStatus: source',

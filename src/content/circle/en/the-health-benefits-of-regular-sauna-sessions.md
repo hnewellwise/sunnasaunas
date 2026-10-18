@@ -1,6 +1,6 @@
 ---
 title: "The Health Benefits of Regular Sauna Sessions"
-seoTitle: "The Health Benefits of Regular Sauna Sessions"
+seoTitle: "The Health Benefits of Regular Sauna Sessions — Sunna"
 description: "What are the physical and metal benefits associated with regular sauna? Learn how you can incorporate sauna into your routine."
 translationKey: the-health-benefits-of-regular-sauna-sessions
 translationStatus: source

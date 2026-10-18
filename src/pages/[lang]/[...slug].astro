@@ -5,11 +5,14 @@
  */
 import type { GetStaticPaths } from 'astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
+import { getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { builtLocales, type Locale } from '../../i18n/config';
 import { pageSlugs, alternatesFor, type PageKey, type Alternate } from '../../i18n/routes';
 import { entriesFor, langOf, pageEntry as findPage, translationSlugs, slugOf } from '../../lib/content';
 import { site } from '../../config/site';
+import { publicPath } from '../../lib/url';
 
 import Page from '../../views/Page.astro';
 import CirclePost from '../../views/CirclePost.astro';
@@ -59,6 +62,9 @@ const { lang, alternates } = props;
 let title: string;
 let description: string;
 let image: string | undefined;
+// Social previews: a 1200px JPEG derivative rather than the multi-MB original.
+const ogImageUrl = async (img?: ImageMetadata) =>
+  img ? (await getImage({ src: img, width: Math.min(1200, img.width), format: 'jpg', quality: 80 })).src : undefined;
 let type: 'website' | 'article' = 'website';
 let jsonLd: Record<string, unknown> | undefined;
 let pageEntry: CollectionEntry<'pages'> | undefined;
@@ -67,7 +73,7 @@ if (props.kind === 'page') {
   pageEntry = await findPage(lang, props.key);
   title = pageEntry?.data.seoTitle ?? pageEntry?.data.title ?? site.name;
   description = pageEntry?.data.description ?? '';
-  image = pageEntry?.data.ogImage?.src;
+  image = await ogImageUrl(pageEntry?.data.ogImage);
   if (props.key === 'home') {
     jsonLd = {
       '@context': 'https://schema.org',
@@ -83,7 +89,7 @@ if (props.kind === 'page') {
   const { data } = props.entry;
   title = data.seoTitle ?? `${data.title} — ${site.name}`;
   description = data.description;
-  image = (data.ogImage ?? data.heroImage)?.src;
+  image = await ogImageUrl(data.ogImage ?? data.heroImage);
   type = props.kind === 'circle' ? 'article' : 'website';
   if (props.kind === 'circle') {
     jsonLd = {
@@ -95,7 +101,7 @@ if (props.kind === 'page') {
       dateModified: (props.entry.data.updatedDate ?? props.entry.data.pubDate).toISOString(),
       inLanguage: lang,
       author: { '@type': 'Organization', name: site.name },
-      mainEntityOfPage: new URL(Astro.url.pathname, site.url).href,
+      mainEntityOfPage: new URL(publicPath(Astro.url), site.url).href,
     };
   }
 }

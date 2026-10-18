@@ -3,6 +3,7 @@ import { Image } from 'astro:assets';
 import { localeMeta, type Locale } from '../i18n/config';
 import { pathFor, type Alternate } from '../i18n/routes';
 import { headerNav, t } from '../i18n/ui';
+import { publicPath } from '../lib/url';
 import logo from '../assets/brand/logo-clay.png';
 
 interface Props {
@@ -11,7 +12,7 @@ interface Props {
 }
 
 const { lang, alternates } = Astro.props;
-const current = Astro.url.pathname;
+const current = publicPath(Astro.url);
 const links = headerNav.map(({ key, label }) => ({ href: pathFor(key, lang), text: t(lang, label) }));
 // Squarespace showed each language as a nav folder; the current language's folder drops down
 // to the page list. Other languages link to this page's translation (or that language's home).

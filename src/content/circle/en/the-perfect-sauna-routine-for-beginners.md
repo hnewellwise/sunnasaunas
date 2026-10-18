@@ -1,7 +1,7 @@
 ---
 title: "The Perfect Sauna Routine For Beginners"
 seoTitle: "The Perfect Sauna Routine For Beginners — Sunna"
-description: ""
+description: "A simple beginner’s guide to sauna: how to prepare, what to expect in your first session, and tips for a great sauna experience."
 translationKey: the-perfect-sauna-routine-for-beginners
 translationStatus: source
 pubDate: 2025-09-03
