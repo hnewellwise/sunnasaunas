@@ -1,0 +1,17 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "sunnasaunas",
+  "compatibility_date": "2026-10-01",
+  // Static site served from Workers static assets (no Worker script needed).
+  "assets": {
+    "directory": "./dist",
+    // /en/about serves dist/en/about.html; /en/about/ redirects to /en/about.
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  }
+  // Custom domains are attached at cutover (see MIGRATION.md):
+  // "routes": [
+  //   { "pattern": "www.sunnasaunas.com", "custom_domain": true },
+  //   { "pattern": "sunnasaunas.com", "custom_domain": true }
+  // ]
+}

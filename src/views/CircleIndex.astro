@@ -1,0 +1,29 @@
+---
+import { render, type CollectionEntry } from 'astro:content';
+import type { Locale } from '../i18n/config';
+import { pathFor } from '../i18n/routes';
+import { entriesFor, slugOf } from '../lib/content';
+
+interface Props {
+  lang: Locale;
+  entry?: CollectionEntry<'pages'>;
+}
+
+const { lang, entry } = Astro.props;
+const posts = await entriesFor('circle', lang);
+const Intro = entry ? (await render(entry)).Content : null;
+// TODO(build): replicate /en/the-circle listing layout.
+---
+
+<section class="circle-index">
+  <h1>{entry?.data.title ?? 'The Circle'}</h1>
+  {Intro && <Intro />}
+  <ul>
+    {posts.map((post) => (
+      <li>
+        <a href={pathFor('circle', lang, slugOf(post))}>{post.data.title}</a>
+        <time datetime={post.data.pubDate.toISOString()}>{post.data.pubDate.toLocaleDateString(lang)}</time>
+      </li>
+    ))}
+  </ul>
+</section>

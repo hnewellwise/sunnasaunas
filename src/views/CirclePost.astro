@@ -1,0 +1,24 @@
+---
+import { Image } from 'astro:assets';
+import { render, type CollectionEntry } from 'astro:content';
+import type { Locale } from '../i18n/config';
+
+interface Props {
+  lang: Locale;
+  entry: CollectionEntry<'circle'>;
+}
+
+const { lang, entry } = Astro.props;
+const { Content } = await render(entry);
+const { title, pubDate, heroImage, heroAlt } = entry.data;
+// TODO(build): replicate the Squarespace blog post layout.
+---
+
+<article class="circle-post">
+  <header>
+    <h1>{title}</h1>
+    <time datetime={pubDate.toISOString()}>{pubDate.toLocaleDateString(lang, { dateStyle: 'long' })}</time>
+  </header>
+  {heroImage && <Image src={heroImage} alt={heroAlt ?? ''} widths={[640, 1280, 1920]} sizes="100vw" />}
+  <Content />
+</article>

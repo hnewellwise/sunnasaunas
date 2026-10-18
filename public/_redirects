@@ -1,0 +1,21 @@
+# Squarespace -> Astro 301 map. English URLs are unchanged (/en/<slug>), so only
+# Squarespace-specific paths need redirecting. Verify with: npm run check:redirects
+# Cloudflare static-assets syntax: <from> <to> <status>. Query strings are not matched.
+
+# Home: Squarespace served it at / and /en/home (canonical /); the new home is /en
+/                           /en                    301
+/en/home                    /en                    301
+/english                    /en                    301
+# Empty Squarespace language folder. Switch to "/pt 301" once PT is published.
+/portuguese                 /en                    302
+
+# Privacy policy sat outside the /en folder on Squarespace
+/privacy-policy             /en/privacy-policy     301
+
+# Squarespace commerce / blog system routes
+/cart                       /en                    301
+/en/the-circle/category/*   /en/the-circle         301
+/en/the-circle/tag/*        /en/the-circle         301
+
+# Old sitemap location (Search Console may still have it submitted)
+/sitemap.xml                /sitemap-index.xml     301

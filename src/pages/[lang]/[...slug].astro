@@ -1,0 +1,126 @@
+---
+/**
+ * The one router for every localized URL. Paths come from src/i18n/routes.ts and the
+ * content collections; nothing else should hardcode a URL.
+ */
+import type { GetStaticPaths } from 'astro';
+import { getCollection, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { builtLocales, type Locale } from '../../i18n/config';
+import { pageSlugs, alternatesFor, staticPageKeys, type PageKey, type StaticPageKey, type Alternate } from '../../i18n/routes';
+import { entriesFor, langOf, pageEntry as findPage, translationSlugs, slugOf } from '../../lib/content';
+import { site } from '../../config/site';
+
+import Home from '../../views/Home.astro';
+import About from '../../views/About.astro';
+import ForEvents from '../../views/ForEvents.astro';
+import IceBath from '../../views/IceBath.astro';
+import SaunasForSale from '../../views/SaunasForSale.astro';
+import Contact from '../../views/Contact.astro';
+import Privacy from '../../views/Privacy.astro';
+import CircleIndex from '../../views/CircleIndex.astro';
+import CirclePost from '../../views/CirclePost.astro';
+import WorkIndex from '../../views/WorkIndex.astro';
+import WorkEntry from '../../views/WorkEntry.astro';
+
+
+type Props =
+  | { kind: 'page'; lang: Locale; key: StaticPageKey; alternates: Alternate[] }
+  | { kind: 'index'; lang: Locale; key: 'circle' | 'work'; alternates: Alternate[] }
+  | { kind: 'circle'; lang: Locale; entry: CollectionEntry<'circle'>; alternates: Alternate[] }
+  | { kind: 'work'; lang: Locale; entry: CollectionEntry<'work'>; alternates: Alternate[] };
+
+export const getStaticPaths = (async () => {
+  // getStaticPaths is hoisted out of the component: keep its helpers inside it.
+  const join = (...parts: (string | undefined)[]) => parts.filter(Boolean).join('/') || undefined;
+  const pageEntries = await getCollection('pages');
+  const has = (key: PageKey) =>
+    pageEntries.filter((e) => e.data.translationKey === key).map(langOf);
+
+  const paths: { params: { lang: Locale; slug: string | undefined }; props: Props }[] = [];
+
+  for (const lang of builtLocales) {
+    for (const key of staticPageKeys) {
+      const available = has(key);
+      if (!available.includes(lang)) continue;
+      paths.push({
+        params: { lang, slug: join(pageSlugs[key][lang]) },
+        props: { kind: 'page', lang, key, alternates: alternatesFor(key, { available }) },
+      });
+    }
+
+    for (const key of ['circle', 'work'] as const) {
+      paths.push({
+        params: { lang, slug: pageSlugs[key][lang] },
+        props: { kind: 'index', lang, key, alternates: alternatesFor(key) },
+      });
+      for (const entry of await entriesFor(key, lang)) {
+        const entrySlugs = await translationSlugs(key, entry.data.translationKey);
+        paths.push({
+          params: { lang, slug: join(pageSlugs[key][lang], slugOf(entry)) },
+          props: { kind: key, lang, entry, alternates: alternatesFor(key, { entrySlugs }) } as Props,
+        });
+      }
+    }
+  }
+  return paths;
+}) satisfies GetStaticPaths;
+
+const props = Astro.props as Props;
+const { lang, alternates } = props;
+
+let title: string;
+let description: string;
+let image: string | undefined;
+let type: 'website' | 'article' = 'website';
+let jsonLd: Record<string, unknown> | undefined;
+let pageEntry: CollectionEntry<'pages'> | undefined;
+
+if (props.kind === 'page' || props.kind === 'index') {
+  pageEntry = await findPage(lang, props.key);
+  title = pageEntry?.data.seoTitle ?? pageEntry?.data.title ?? site.name;
+  description = pageEntry?.data.description ?? '';
+  image = pageEntry?.data.ogImage?.src;
+  if (props.key === 'home') {
+    jsonLd = {
+      '@context': 'https://schema.org',
+      '@type': 'LocalBusiness',
+      name: site.name,
+      url: site.url,
+      email: site.email,
+      sameAs: [site.instagram],
+      areaServed: 'Portugal',
+    };
+  }
+} else {
+  const { data } = props.entry;
+  title = data.seoTitle ?? `${data.title} — ${site.name}`;
+  description = data.description;
+  image = (data.ogImage ?? data.heroImage)?.src;
+  type = props.kind === 'circle' ? 'article' : 'website';
+  if (props.kind === 'circle') {
+    jsonLd = {
+      '@context': 'https://schema.org',
+      '@type': 'BlogPosting',
+      headline: data.title,
+      description: data.description,
+      datePublished: props.entry.data.pubDate.toISOString(),
+      dateModified: (props.entry.data.updatedDate ?? props.entry.data.pubDate).toISOString(),
+      inLanguage: lang,
+      author: { '@type': 'Organization', name: site.name },
+      mainEntityOfPage: new URL(Astro.url.pathname, site.url).href,
+    };
+  }
+}
+
+const staticViews: Record<StaticPageKey, typeof Home> = { home: Home, about: About, forEvents: ForEvents, iceBath: IceBath, saunasForSale: SaunasForSale, contact: Contact, privacy: Privacy };
+const View = props.kind === 'page' ? staticViews[props.key] : null;
+---
+
+<BaseLayout {lang} {title} {description} {alternates} {image} {type} {jsonLd}>
+  {View && pageEntry && <View lang={lang} entry={pageEntry} />}
+  {props.kind === 'index' && props.key === 'circle' && <CircleIndex lang={lang} entry={pageEntry} />}
+  {props.kind === 'index' && props.key === 'work' && <WorkIndex lang={lang} entry={pageEntry} />}
+  {props.kind === 'circle' && <CirclePost lang={lang} entry={props.entry} />}
+  {props.kind === 'work' && <WorkEntry lang={lang} entry={props.entry} />}
+</BaseLayout>

@@ -1,0 +1,56 @@
+/*
+ * Global tokens and base styles.
+ * TODO(build): replace with values lifted from the Squarespace theme
+ * (colours, Poppins + Typekit fonts, spacing, button styles) so the replica matches.
+ */
+:root {
+  --color-bg: #ffffff;
+  --color-text: #1a1a1a;
+  --color-accent: #b5651d;
+  --font-body: 'Poppins', system-ui, sans-serif;
+  --font-heading: 'Poppins', system-ui, sans-serif;
+  --max-width: 1200px;
+  --gutter: clamp(16px, 4vw, 48px);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  line-height: 1.6;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+}
+.skip-link:focus {
+  left: 1rem;
+  top: 1rem;
+}
+
+.draft-banner {
+  background: #fff3cd;
+  padding: 0.5rem var(--gutter);
+  text-align: center;
+  font-size: 0.875rem;
+}
+
+main {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}

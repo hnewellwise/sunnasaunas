@@ -1,0 +1,27 @@
+---
+import type { Locale } from '../i18n/config';
+import { pathFor } from '../i18n/routes';
+import { footerNav, t } from '../i18n/ui';
+import { site } from '../config/site';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+// TODO(build): replicate Squarespace footer layout.
+---
+
+<footer class="site-footer">
+  <nav aria-label="Footer">
+    <ul>
+      {footerNav.map(({ key, label }) => (
+        <li><a href={pathFor(key, lang)}>{t(lang, label)}</a></li>
+      ))}
+    </ul>
+  </nav>
+  <p>
+    <a href={`mailto:${site.email}`}>{site.email}</a>
+    · <a href={site.instagram} rel="me noopener">Instagram</a>
+  </p>
+</footer>

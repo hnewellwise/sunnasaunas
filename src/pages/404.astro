@@ -1,0 +1,10 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { defaultLocale } from '../i18n/config';
+import { pathFor } from '../i18n/routes';
+---
+
+<BaseLayout lang={defaultLocale} title="Page not found — Sunna" description="" alternates={[]} noindex>
+  <h1>Page not found</h1>
+  <p><a href={pathFor('home', defaultLocale)}>Back to the home page</a></p>
+</BaseLayout>

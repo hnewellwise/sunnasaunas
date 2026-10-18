@@ -1,0 +1,26 @@
+---
+import { render, type CollectionEntry } from 'astro:content';
+import type { Locale } from '../i18n/config';
+import { pathFor } from '../i18n/routes';
+import { entriesFor, slugOf } from '../lib/content';
+
+interface Props {
+  lang: Locale;
+  entry?: CollectionEntry<'pages'>;
+}
+
+const { lang, entry } = Astro.props;
+const items = await entriesFor('work', lang);
+const Intro = entry ? (await render(entry)).Content : null;
+// TODO(build): replicate /en/our-work portfolio grid.
+---
+
+<section class="work-index">
+  <h1>{entry?.data.title ?? 'Our Work'}</h1>
+  {Intro && <Intro />}
+  <ul>
+    {items.map((item) => (
+      <li><a href={pathFor('work', lang, slugOf(item))}>{item.data.title}</a></li>
+    ))}
+  </ul>
+</section>

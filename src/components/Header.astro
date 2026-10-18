@@ -1,0 +1,32 @@
+---
+import type { Locale } from '../i18n/config';
+import { pathFor, type Alternate } from '../i18n/routes';
+import { headerNav, t } from '../i18n/ui';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+
+interface Props {
+  lang: Locale;
+  alternates: Alternate[];
+}
+
+const { lang, alternates } = Astro.props;
+const current = Astro.url.pathname;
+// TODO(build): replicate Squarespace header (logo, layout, mobile overlay menu).
+---
+
+<header class="site-header">
+  <a class="site-logo" href={pathFor('home', lang)}>Sunna</a>
+  <nav aria-label="Main">
+    <ul>
+      {headerNav.map(({ key, label }) => {
+        const href = pathFor(key, lang);
+        return (
+          <li>
+            <a href={href} aria-current={current === href ? 'page' : undefined}>{t(lang, label)}</a>
+          </li>
+        );
+      })}
+    </ul>
+  </nav>
+  <LanguageSwitcher lang={lang} alternates={alternates} />
+</header>

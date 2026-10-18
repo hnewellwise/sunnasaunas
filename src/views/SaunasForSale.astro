@@ -1,0 +1,19 @@
+---
+import { render, type CollectionEntry } from 'astro:content';
+import type { Locale } from '../i18n/config';
+
+interface Props {
+  lang: Locale;
+  entry: CollectionEntry<'pages'>;
+}
+
+const { lang, entry } = Astro.props;
+const { Content } = await render(entry);
+// TODO(build): replicate /en/saunas-for-sale section by section (see migration/snapshot/html/en/saunas-for-sale.html).
+// Copy goes in src/content/pages/<lang>/saunasForSale.md (sections frontmatter), markup here.
+---
+
+<article class="page page-saunasForSale" data-lang={lang}>
+  <h1>{entry.data.title}</h1>
+  <Content />
+</article>

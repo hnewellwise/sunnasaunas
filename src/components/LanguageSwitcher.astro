@@ -1,0 +1,22 @@
+---
+import { localeMeta, type Locale } from '../i18n/config';
+import type { Alternate } from '../i18n/routes';
+import { t } from '../i18n/ui';
+
+interface Props {
+  lang: Locale;
+  alternates: Alternate[];
+}
+
+const { lang, alternates } = Astro.props;
+---
+
+{alternates.length > 1 && (
+  <nav class="lang-switcher" aria-label={t(lang, 'lang.switch')}>
+    {alternates.map((a) => (
+      <a href={a.href} hreflang={localeMeta[a.lang].htmlLang} aria-current={a.lang === lang ? 'true' : undefined}>
+        {a.lang.toUpperCase()}
+      </a>
+    ))}
+  </nav>
+)}

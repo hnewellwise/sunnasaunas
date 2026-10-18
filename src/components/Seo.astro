@@ -1,0 +1,41 @@
+---
+import { localeMeta, defaultLocale, isPublished, type Locale } from '../i18n/config';
+import type { Alternate } from '../i18n/routes';
+import { site } from '../config/site';
+
+interface Props {
+  lang: Locale;
+  title: string;
+  description: string;
+  alternates: Alternate[];
+  image?: string;
+  type?: 'website' | 'article';
+  noindex?: boolean;
+}
+
+const { lang, title, description, alternates, image, type = 'website', noindex } = Astro.props;
+const canonical = new URL(Astro.url.pathname, site.url).href;
+const ogImage = new URL(image ?? site.defaultOgImage, site.url).href;
+const xDefault = alternates.find((a) => a.lang === defaultLocale);
+// Unreviewed translations are never indexed, even when built for preview.
+const robots = noindex || !isPublished(lang) ? 'noindex, nofollow' : 'index, follow';
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<meta name="robots" content={robots} />
+<link rel="canonical" href={canonical} />
+{alternates.map((a) => <link rel="alternate" hreflang={localeMeta[a.lang].htmlLang} href={new URL(a.href, site.url).href} />)}
+{xDefault && <link rel="alternate" hreflang="x-default" href={new URL(xDefault.href, site.url).href} />}
+
+<meta property="og:site_name" content={site.name} />
+<meta property="og:type" content={type} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:locale" content={localeMeta[lang].ogLocale} />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />

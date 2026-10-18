@@ -1,0 +1,117 @@
+import type { Locale } from './config';
+import type { PageKey } from './routes';
+
+/** Shared chrome strings (nav, footer, buttons). Page copy lives in src/content/pages/<lang>/. */
+const en = {
+  'nav.home': 'Home',
+  'nav.about': 'How It Works',
+  'nav.forEvents': 'For Events',
+  'nav.contact': 'Get In Touch',
+  'nav.iceBath': 'Ice Bath Hire',
+  'nav.circle': 'The Circle',
+  'nav.work': 'Our Work',
+  'nav.saunasForSale': 'Buy Your Own Sauna',
+  'footer.saunasForSale': 'Buy A Sauna',
+  'footer.circle': 'Blog - The Circle',
+  'footer.contact': 'Contact',
+  'footer.privacy': 'Privacy Policy',
+  'a11y.skip': 'Skip to Content',
+  'a11y.openMenu': 'Open Menu',
+  'a11y.closeMenu': 'Close Menu',
+  'lang.switch': 'Language',
+  'form.fallback': 'Email us at',
+  'draft.banner': 'Draft translation, awaiting review.',
+};
+
+export type UiKey = keyof typeof en;
+
+// TODO(translation): Claude-drafted, needs native review.
+const pt: Record<UiKey, string> = {
+  'nav.home': 'Início',
+  'nav.about': 'Como Funciona',
+  'nav.forEvents': 'Para Eventos',
+  'nav.contact': 'Contacte-nos',
+  'nav.iceBath': 'Aluguer de Banho de Gelo',
+  'nav.circle': 'The Circle',
+  'nav.work': 'O Nosso Trabalho',
+  'nav.saunasForSale': 'Compre a Sua Sauna',
+  'footer.saunasForSale': 'Comprar Sauna',
+  'footer.circle': 'Blog - The Circle',
+  'footer.contact': 'Contacto',
+  'footer.privacy': 'Política de Privacidade',
+  'a11y.skip': 'Saltar para o conteúdo',
+  'a11y.openMenu': 'Abrir menu',
+  'a11y.closeMenu': 'Fechar menu',
+  'lang.switch': 'Idioma',
+  'form.fallback': 'Envie-nos um email para',
+  'draft.banner': 'Tradução provisória, a aguardar revisão.',
+};
+
+const fr: Record<UiKey, string> = {
+  'nav.home': 'Accueil',
+  'nav.about': 'Comment ça marche',
+  'nav.forEvents': 'Pour les événements',
+  'nav.contact': 'Nous contacter',
+  'nav.iceBath': 'Location de bain glacé',
+  'nav.circle': 'The Circle',
+  'nav.work': 'Nos réalisations',
+  'nav.saunasForSale': 'Achetez votre sauna',
+  'footer.saunasForSale': 'Acheter un sauna',
+  'footer.circle': 'Blog - The Circle',
+  'footer.contact': 'Contact',
+  'footer.privacy': 'Politique de confidentialité',
+  'a11y.skip': 'Aller au contenu',
+  'a11y.openMenu': 'Ouvrir le menu',
+  'a11y.closeMenu': 'Fermer le menu',
+  'lang.switch': 'Langue',
+  'form.fallback': 'Écrivez-nous à',
+  'draft.banner': 'Traduction provisoire, en attente de relecture.',
+};
+
+const es: Record<UiKey, string> = {
+  'nav.home': 'Inicio',
+  'nav.about': 'Cómo Funciona',
+  'nav.forEvents': 'Para Eventos',
+  'nav.contact': 'Contacto',
+  'nav.iceBath': 'Alquiler de Baño de Hielo',
+  'nav.circle': 'The Circle',
+  'nav.work': 'Nuestro Trabajo',
+  'nav.saunasForSale': 'Compra Tu Sauna',
+  'footer.saunasForSale': 'Comprar Sauna',
+  'footer.circle': 'Blog - The Circle',
+  'footer.contact': 'Contacto',
+  'footer.privacy': 'Política de Privacidad',
+  'a11y.skip': 'Saltar al contenido',
+  'a11y.openMenu': 'Abrir menú',
+  'a11y.closeMenu': 'Cerrar menú',
+  'lang.switch': 'Idioma',
+  'form.fallback': 'Escríbenos a',
+  'draft.banner': 'Traducción provisional, pendiente de revisión.',
+};
+
+const dictionaries: Record<Locale, Record<UiKey, string>> = { en, pt, fr, es };
+
+export const t = (lang: Locale, key: UiKey) => dictionaries[lang][key] ?? en[key];
+
+/** Header navigation order, matching the Squarespace menu. */
+export const headerNav: { key: PageKey; label: UiKey }[] = [
+  { key: 'home', label: 'nav.home' },
+  { key: 'about', label: 'nav.about' },
+  { key: 'forEvents', label: 'nav.forEvents' },
+  { key: 'contact', label: 'nav.contact' },
+  { key: 'iceBath', label: 'nav.iceBath' },
+  { key: 'circle', label: 'nav.circle' },
+  { key: 'work', label: 'nav.work' },
+  { key: 'saunasForSale', label: 'nav.saunasForSale' },
+];
+
+export const footerNav: { key: PageKey; label: UiKey }[] = [
+  { key: 'home', label: 'nav.home' },
+  { key: 'work', label: 'nav.work' },
+  { key: 'forEvents', label: 'nav.forEvents' },
+  { key: 'iceBath', label: 'nav.iceBath' },
+  { key: 'saunasForSale', label: 'footer.saunasForSale' },
+  { key: 'circle', label: 'footer.circle' },
+  { key: 'contact', label: 'footer.contact' },
+  { key: 'privacy', label: 'footer.privacy' },
+];

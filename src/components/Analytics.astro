@@ -1,0 +1,18 @@
+---
+import { site } from '../config/site';
+// GA4, carried over from Squarespace. TODO(build): Squarespace showed a cookie banner;
+// decide between a consent banner (GA consent mode) or cookieless Cloudflare Web Analytics.
+const id = site.gaMeasurementId;
+---
+
+{import.meta.env.PROD && id && (
+  <>
+    <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${id}`}></script>
+    <script is:inline define:vars={{ id }}>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', id);
+    </script>
+  </>
+)}
