@@ -26,6 +26,7 @@ const autocomplete: Record<string, string> = { email: 'email', phone_number: 'te
     class:list={['opnform', `opnform--${form}`]}
     data-opnform={`${OPNFORM_API}/forms/${schema.slug}/answer`}
     data-sending={t(lang, 'form.sending')}
+    data-phone-hint={t(lang, 'form.phoneHint')}
     novalidate
   >
     {schema.fields.map((f) => (
@@ -87,12 +88,6 @@ const autocomplete: Record<string, string> = { email: 'email', phone_number: 'te
 )}
 
 <script>
-  // OpnForm wants phone numbers in international format; most visitors are in Portugal.
-  const normalizePhone = (v: string) => {
-    const s = v.replace(/[\s().-]/g, '').replace(/^00/, '+');
-    return !s || s.startsWith('+') ? s : `+351${s}`;
-  };
-
   for (const form of document.querySelectorAll<HTMLFormElement>('form[data-opnform]')) {
     const button = form.querySelector<HTMLButtonElement>('.submit')!;
     const formError = form.querySelector<HTMLElement>('.form-error')!;
@@ -103,9 +98,10 @@ const autocomplete: Record<string, string> = { email: 'email', phone_number: 'te
       let first: HTMLElement | null = null;
       for (const el of form.querySelectorAll<HTMLElement>('[data-error-for]')) {
         const msg = errors[el.dataset.errorFor!]?.[0];
-        el.textContent = msg ?? '';
+        const input = form.elements.namedItem(el.dataset.errorFor!) as HTMLInputElement | null;
+        // OpnForm only accepts international numbers (+351 …) and its message doesn't say so.
+        el.textContent = msg && input?.type === 'tel' ? `${msg} ${form.dataset.phoneHint}` : (msg ?? '');
         el.hidden = !msg;
-        const input = form.elements.namedItem(el.dataset.errorFor!) as HTMLElement | null;
         input?.setAttribute('aria-invalid', String(!!msg));
         if (msg && !first) first = input;
       }
@@ -127,8 +123,7 @@ const autocomplete: Record<string, string> = { email: 'email', phone_number: 'te
       const data: Record<string, string> = {};
       for (const [k, v] of new FormData(form)) {
         if (k === '_hp') continue;
-        const el = form.elements.namedItem(k) as HTMLInputElement;
-        data[k] = el.type === 'tel' ? normalizePhone(String(v)) : String(v).trim();
+        data[k] = String(v).trim();
       }
       if ((form.elements.namedItem('_hp') as HTMLInputElement).value) return;
 
