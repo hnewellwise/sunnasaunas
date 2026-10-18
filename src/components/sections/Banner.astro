@@ -1,0 +1,32 @@
+---
+import Img from '../Img.astro';
+import type { BannerSection } from './types';
+
+interface Props {
+  section: BannerSection;
+}
+
+// Full-bleed image strip (home "woosh" spiral photo).
+const { section: s } = Astro.props;
+---
+
+<section class="banner" id={s.id}>
+  <Img src={s.image.src} alt={s.image.alt ?? ''} />
+</section>
+
+<style>
+  .banner {
+    height: 38vw;
+    overflow: hidden;
+  }
+  .banner :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  @media (max-width: 767px) {
+    .banner {
+      height: 60vw;
+    }
+  }
+</style>

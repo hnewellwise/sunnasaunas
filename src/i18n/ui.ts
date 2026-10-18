@@ -21,6 +21,10 @@ const en = {
   'lang.switch': 'Language',
   'form.fallback': 'Email us at',
   'draft.banner': 'Draft translation, awaiting review.',
+  'blog.readMore': 'Read More',
+  'blog.prev': 'Previous post',
+  'blog.next': 'Next post',
+  'work.back': 'Back to Our Work',
 };
 
 export type UiKey = keyof typeof en;
@@ -45,6 +49,10 @@ const pt: Record<UiKey, string> = {
   'lang.switch': 'Idioma',
   'form.fallback': 'Envie-nos um email para',
   'draft.banner': 'Tradução provisória, a aguardar revisão.',
+  'blog.readMore': 'Ler Mais',
+  'blog.prev': 'Artigo anterior',
+  'blog.next': 'Artigo seguinte',
+  'work.back': 'Voltar a O Nosso Trabalho',
 };
 
 const fr: Record<UiKey, string> = {
@@ -66,6 +74,10 @@ const fr: Record<UiKey, string> = {
   'lang.switch': 'Langue',
   'form.fallback': 'Écrivez-nous à',
   'draft.banner': 'Traduction provisoire, en attente de relecture.',
+  'blog.readMore': 'Lire la suite',
+  'blog.prev': 'Article précédent',
+  'blog.next': 'Article suivant',
+  'work.back': 'Retour à nos réalisations',
 };
 
 const es: Record<UiKey, string> = {
@@ -87,6 +99,10 @@ const es: Record<UiKey, string> = {
   'lang.switch': 'Idioma',
   'form.fallback': 'Escríbenos a',
   'draft.banner': 'Traducción provisional, pendiente de revisión.',
+  'blog.readMore': 'Leer Más',
+  'blog.prev': 'Artículo anterior',
+  'blog.next': 'Artículo siguiente',
+  'work.back': 'Volver a Nuestro Trabajo',
 };
 
 const dictionaries: Record<Locale, Record<UiKey, string>> = { en, pt, fr, es };

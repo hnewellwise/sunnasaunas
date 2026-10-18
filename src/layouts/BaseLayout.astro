@@ -27,7 +27,11 @@ const { lang, alternates, jsonLd, ...seo } = Astro.props;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#e6e4cd" />
+    <script is:inline>document.documentElement.classList.add('js')</script>
     <Seo lang={lang} alternates={alternates} {...seo} />
     {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
     <Analytics />
@@ -40,5 +44,20 @@ const { lang, alternates, jsonLd, ...seo } = Astro.props;
       <slot />
     </main>
     <Footer lang={lang} />
+    <script>
+      // Fade blocks in as they scroll into view (Squarespace-style). CSS hides them only when JS runs.
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            if (e.isIntersecting) {
+              e.target.classList.add('is-visible');
+              io.unobserve(e.target);
+            }
+          }
+        },
+        { rootMargin: '0px 0px -10% 0px' },
+      );
+      document.querySelectorAll('[data-reveal]').forEach((el) => io.observe(el));
+    </script>
   </body>
 </html>

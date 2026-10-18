@@ -29,3 +29,4 @@ pnpm-debug.log*
 
 # Squarespace snapshot images (re-create with npm run scrape)
 migration/snapshot/images/
+migration/capture/

@@ -1,0 +1,103 @@
+---
+import SectionWrap from './SectionWrap.astro';
+import Img from '../Img.astro';
+import Button from '../Button.astro';
+import type { Locale } from '../../i18n/config';
+import type { CtaSection } from './types';
+import { md, mdInline } from '../../lib/markdown';
+import { aspectVars } from '../../lib/aspect';
+
+interface Props {
+  section: CtaSection;
+  lang: Locale;
+}
+
+// Two variants seen on Squarespace:
+//  - with image (home "Ready to heat it up?"): heading + copy + button left, photo right
+//  - sage band ("Let's Make It Happen"): heading + copy left, wide white button right
+const { section: s, lang } = Astro.props;
+const band = !s.image;
+---
+
+<SectionWrap theme={s.theme ?? (band ? 'sage' : 'cream')} pad={s.pad ?? (band ? 'lg' : 'md')} id={s.id}>
+  <div class:list={['cta', { band }]}>
+    <div class="copy" data-reveal>
+      <h2 set:html={mdInline(s.heading, lang)} />
+      {s.body && <div class="rte" set:html={md(s.body, lang)} />}
+      {!band && <Button {...s.button} lang={lang} class="cta-btn" />}
+    </div>
+    {s.image ? (
+      <div class="media" data-reveal style={aspectVars(s.imageAspect, s.imageAspectMobile)}>
+        <Img src={s.image.src} alt={s.image.alt ?? ''} sizes="(min-width: 768px) 33vw, 88vw" />
+      </div>
+    ) : (
+      <div class="action" data-reveal>
+        <Button {...s.button} kind="inverse" lang={lang} class="band-btn" />
+      </div>
+    )}
+  </div>
+</SectionWrap>
+
+<style>
+  .cta {
+    display: grid;
+    grid-template-columns: 40vw 33vw;
+    justify-content: space-between;
+    align-items: start;
+  }
+  .band {
+    grid-template-columns: 40vw 33vw;
+    align-items: center;
+  }
+  h2 {
+    font-size: var(--fs-h2);
+    margin-bottom: 0.9em;
+  }
+  .band h2 {
+    font-size: var(--fs-h3);
+    margin-bottom: 0.5em;
+  }
+  .rte {
+    font-size: var(--fs-small);
+  }
+  .rte :global(p) {
+    margin-bottom: 0.6em;
+  }
+  .copy :global(.cta-btn) {
+    margin-top: 48px;
+    min-width: 19vw;
+    font-size: 13px;
+    padding-block: 1.6em;
+  }
+  .media :global(img) {
+    width: 100%;
+    border-radius: var(--radius-img);
+  }
+  .action :global(.band-btn) {
+    display: block;
+    width: 100%;
+    background: #fff;
+    color: var(--olive);
+    font-size: 15px;
+    padding-block: 1.1em;
+  }
+  @media (max-width: 767px) {
+    .cta,
+    .band {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .band {
+      text-align: center;
+    }
+  }
+  .media :global(img) {
+    aspect-ratio: var(--ar, auto);
+    object-fit: cover;
+  }
+  @media (max-width: 767px) {
+    .media :global(img) {
+      aspect-ratio: var(--ar-m, var(--ar, auto));
+    }
+  }
+</style>

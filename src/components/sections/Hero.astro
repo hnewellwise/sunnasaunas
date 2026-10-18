@@ -1,0 +1,53 @@
+---
+import Img from '../Img.astro';
+import type { Locale } from '../../i18n/config';
+import type { HeroSection } from './types';
+import { mdInline } from '../../lib/markdown';
+
+interface Props {
+  section: HeroSection;
+  lang: Locale;
+}
+
+const { section, lang } = Astro.props;
+// Each line of the heading is its own block on Squarespace ("Heat," / "Delivered").
+const lines = section.heading.trim().split('\n');
+---
+
+<section class="hero" id={section.id}>
+  <Img src={section.image.src} alt={section.image.alt ?? ''} class="bg" loading="eager" />
+  <h1 class="heading" data-reveal>
+    {lines.map((l) => <span set:html={mdInline(l, lang)} />)}
+  </h1>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    height: calc(100svh - var(--header-h));
+    min-height: 480px;
+    display: flex;
+    align-items: center;
+    padding-inline: var(--gutter);
+    overflow: hidden;
+    background: var(--sage);
+  }
+  .hero :global(.bg) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .heading {
+    position: relative;
+    color: var(--cream);
+    font-size: var(--fs-h2);
+    line-height: 1.07;
+    margin: 0 0 8vh;
+  }
+  .heading span {
+    display: block;
+    margin-bottom: 0.45em;
+  }
+</style>

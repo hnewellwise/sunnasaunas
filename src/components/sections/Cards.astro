@@ -1,0 +1,138 @@
+---
+import SectionWrap from './SectionWrap.astro';
+import Img from '../Img.astro';
+import Button from '../Button.astro';
+import type { Locale } from '../../i18n/config';
+import type { CardsSection } from './types';
+import { md, mdInline } from '../../lib/markdown';
+import { resolveHref } from '../../lib/links';
+
+interface Props {
+  section: CardsSection;
+  lang: Locale;
+}
+
+// round: home "Our Services" (circular photos, title, text, text link).
+// overlay: saunas-for-sale product tiles (photo with centred title/price over it).
+const { section: s, lang } = Astro.props;
+---
+
+<SectionWrap theme={s.theme} pad={s.pad} id={s.id}>
+  {s.heading && <h2 class="title" data-reveal set:html={mdInline(s.heading, lang)} />}
+  <ul class:list={['cards', s.variant]}>
+    {s.items.map((item) => (
+      <li class="card" data-reveal>
+        <div class="photo">
+          <Img src={item.image.src} alt={item.image.alt ?? ''} sizes="(min-width: 768px) 26vw, 88vw" />
+        </div>
+        <div class="text">
+          <h3 class="card-title" set:html={mdInline(item.title, lang)} />
+          {item.body && <div class="rte" set:html={md(item.body, lang)} />}
+          {item.link && <a class="more" href={resolveHref(item.link.href, lang)}>{item.link.text}</a>}
+        </div>
+      </li>
+    ))}
+  </ul>
+  {s.button && (
+    <div class="after" data-reveal>
+      <Button {...s.button} lang={lang} />
+    </div>
+  )}
+</SectionWrap>
+
+<style>
+  .title {
+    text-align: center;
+    font-size: var(--fs-h3);
+    margin-bottom: 1em;
+  }
+  .cards {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4vw;
+  }
+  .overlay {
+    gap: 0.5vw;
+  }
+
+  .round .photo :global(img) {
+    aspect-ratio: 1;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+  .round .text {
+    text-align: center;
+    padding: 22px 6% 0;
+  }
+  .round .card-title {
+    font-size: 26px;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.4em;
+  }
+  .round .rte {
+    font-size: var(--fs-small);
+  }
+  .more {
+    display: inline-block;
+    margin-top: 1.4em;
+    font-size: var(--fs-btn);
+    color: var(--clay);
+    text-decoration: none;
+  }
+
+  .overlay .card {
+    position: relative;
+    border-radius: var(--radius-img);
+    overflow: hidden;
+  }
+  .overlay .photo :global(img) {
+    aspect-ratio: 26 / 31.5;
+    width: 100%;
+    object-fit: cover;
+  }
+  .overlay .text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #fff;
+  }
+  .overlay .card-title {
+    color: #fff;
+    font-size: var(--fs-h4);
+    margin-bottom: 0.3em;
+  }
+  .overlay .rte {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 20px;
+  }
+
+  .after {
+    text-align: center;
+    margin-top: 56px;
+  }
+  .after :global(.btn) {
+    min-width: 19vw;
+  }
+
+  @media (max-width: 767px) {
+    .cards {
+      grid-template-columns: 1fr;
+      gap: 48px;
+    }
+    .overlay {
+      gap: 12px;
+    }
+    .round .photo {
+      padding-inline: 6vw;
+    }
+  }
+</style>

@@ -26,10 +26,6 @@ export const pageSlugs = {
 
 export type PageKey = keyof typeof pageSlugs;
 
-/** Pages rendered by a dedicated view in src/views (everything except collection indexes). */
-export const staticPageKeys = ['home', 'about', 'forEvents', 'iceBath', 'saunasForSale', 'contact', 'privacy'] as const;
-export type StaticPageKey = (typeof staticPageKeys)[number];
-
 export function pathFor(key: PageKey, lang: Locale, entrySlug?: string): string {
   const parts = [lang, pageSlugs[key][lang], entrySlug].filter(Boolean);
   return '/' + parts.join('/');

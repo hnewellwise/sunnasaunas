@@ -1,0 +1,44 @@
+---
+import SectionWrap from './SectionWrap.astro';
+import OpnForm from '../OpnForm.astro';
+import type { Locale } from '../../i18n/config';
+import type { FormSection } from './types';
+import { md, mdInline } from '../../lib/markdown';
+
+interface Props {
+  section: FormSection;
+  lang: Locale;
+}
+
+// Centred form section (saunas-for-sale "Purchase A Sauna" on dark olive).
+const { section: s, lang } = Astro.props;
+---
+
+<SectionWrap theme={s.theme ?? 'olive'} pad={s.pad} id={s.id}>
+  <div class="form-block">
+    {s.heading && <h2 set:html={mdInline(s.heading, lang)} />}
+    {s.body && <div class="rte" set:html={md(s.body, lang)} />}
+    <OpnForm lang={lang} form={s.form} />
+  </div>
+</SectionWrap>
+
+<style>
+  .form-block {
+    max-width: 53vw;
+    margin: 0 auto;
+  }
+  h2 {
+    font-size: var(--fs-h3);
+    text-align: center;
+  }
+  .rte {
+    text-align: center;
+    font-size: var(--fs-small);
+    margin-bottom: 32px;
+  }
+  @media (max-width: 767px) {
+    .form-block {
+      max-width: none;
+    }
+  }
+</style>

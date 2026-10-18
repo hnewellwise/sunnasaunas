@@ -1,8 +1,9 @@
 ---
-import type { Locale } from '../i18n/config';
+import { Image } from 'astro:assets';
+import { localeMeta, type Locale } from '../i18n/config';
 import { pathFor, type Alternate } from '../i18n/routes';
 import { headerNav, t } from '../i18n/ui';
-import LanguageSwitcher from './LanguageSwitcher.astro';
+import logo from '../assets/brand/logo-clay.png';
 
 interface Props {
   lang: Locale;
@@ -11,22 +12,212 @@ interface Props {
 
 const { lang, alternates } = Astro.props;
 const current = Astro.url.pathname;
-// TODO(build): replicate Squarespace header (logo, layout, mobile overlay menu).
+const links = headerNav.map(({ key, label }) => ({ href: pathFor(key, lang), text: t(lang, label) }));
+// Squarespace showed each language as a nav folder; the current language's folder drops down
+// to the page list. Other languages link to this page's translation (or that language's home).
+const otherLangs = alternates.filter((a) => a.lang !== lang);
 ---
 
 <header class="site-header">
-  <a class="site-logo" href={pathFor('home', lang)}>Sunna</a>
-  <nav aria-label="Main">
-    <ul>
-      {headerNav.map(({ key, label }) => {
-        const href = pathFor(key, lang);
-        return (
-          <li>
-            <a href={href} aria-current={current === href ? 'page' : undefined}>{t(lang, label)}</a>
-          </li>
-        );
-      })}
-    </ul>
-  </nav>
-  <LanguageSwitcher lang={lang} alternates={alternates} />
+  <div class="bar">
+    <button class="burger" aria-expanded="false" aria-controls="mobile-menu">
+      <span class="visually-hidden">{t(lang, 'a11y.openMenu')}</span>
+      <span class="bun"></span><span class="bun"></span>
+    </button>
+    <a class="logo" href={pathFor('home', lang)} aria-label="Sunna">
+      <Image src={logo} alt="Sunna" height={56} densities={[1, 2]} loading="eager" />
+    </a>
+    <nav class="desktop-nav" aria-label="Main">
+      <div class="folder">
+        <button class="folder-title" aria-haspopup="true">{localeMeta[lang].label}</button>
+        <ul class="folder-items">
+          {links.map((l) => (
+            <li><a href={l.href} aria-current={current === l.href ? 'page' : undefined}>{l.text}</a></li>
+          ))}
+        </ul>
+      </div>
+      {otherLangs.map((a) => (
+        <a class="lang" href={a.href} hreflang={localeMeta[a.lang].htmlLang} lang={localeMeta[a.lang].htmlLang}>{localeMeta[a.lang].label}</a>
+      ))}
+    </nav>
+  </div>
+
+  <div class="mobile-menu" id="mobile-menu" hidden>
+    <nav aria-label="Main">
+      <ul>
+        {links.map((l) => (
+          <li><a href={l.href} aria-current={current === l.href ? 'page' : undefined}>{l.text}</a></li>
+        ))}
+      </ul>
+      {otherLangs.length > 0 && (
+        <ul class="mobile-langs">
+          {otherLangs.map((a) => (
+            <li><a href={a.href} hreflang={localeMeta[a.lang].htmlLang} lang={localeMeta[a.lang].htmlLang}>{localeMeta[a.lang].label}</a></li>
+          ))}
+        </ul>
+      )}
+    </nav>
+  </div>
 </header>
+
+<script>
+  const header = document.querySelector('.site-header')!;
+  const burger = header.querySelector<HTMLButtonElement>('.burger')!;
+  const menu = header.querySelector<HTMLElement>('.mobile-menu')!;
+  burger.addEventListener('click', () => {
+    const open = burger.getAttribute('aria-expanded') !== 'true';
+    burger.setAttribute('aria-expanded', String(open));
+    menu.hidden = !open;
+    document.body.style.overflow = open ? 'hidden' : '';
+  });
+  for (const folder of header.querySelectorAll<HTMLElement>('.folder')) {
+    const btn = folder.querySelector('button')!;
+    btn.addEventListener('click', () => folder.classList.toggle('open'));
+    folder.addEventListener('mouseleave', () => folder.classList.remove('open'));
+  }
+</script>
+
+<style>
+  .site-header {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 50;
+    background: var(--cream);
+  }
+  .bar {
+    height: var(--header-h);
+    padding: 6px var(--gutter);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo img {
+    height: 56px;
+    width: auto;
+  }
+  .desktop-nav {
+    display: flex;
+    align-items: center;
+    gap: 1.6em;
+    font-size: var(--fs-body);
+  }
+  .desktop-nav a,
+  .folder-title {
+    color: var(--sage);
+    text-decoration: none;
+    font: inherit;
+    background: none;
+    border: 0;
+    padding: 0.1em 0;
+    cursor: pointer;
+  }
+  .folder {
+    position: relative;
+  }
+  .folder-title {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+  .folder-items {
+    list-style: none;
+    margin: 0;
+    padding: 0.6em 0;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--cream);
+    min-width: max-content;
+    text-align: center;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .folder:hover .folder-items,
+  .folder:focus-within .folder-items,
+  .folder.open .folder-items {
+    visibility: visible;
+    opacity: 1;
+  }
+  .folder-items li {
+    padding: 0.25em 1em;
+  }
+  .folder-items a:hover,
+  .folder-items a[aria-current='page'],
+  .lang:hover {
+    text-decoration: underline;
+  }
+
+  .burger {
+    display: none;
+    width: 34px;
+    height: 34px;
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    position: relative;
+  }
+  .bun {
+    display: block;
+    position: absolute;
+    left: 3px;
+    right: 3px;
+    height: 2px;
+    background: var(--sage);
+    transition: transform 0.2s;
+  }
+  .bun:nth-of-type(1) { top: 12px; }
+  .bun:nth-of-type(2) { top: 20px; }
+  .burger[aria-expanded='true'] .bun:nth-of-type(1) { transform: translateY(4px) rotate(45deg); }
+  .burger[aria-expanded='true'] .bun:nth-of-type(2) { transform: translateY(-4px) rotate(-45deg); }
+
+  .mobile-menu {
+    position: fixed;
+    inset: var(--header-h) 0 0 0;
+    background: var(--cream);
+    overflow-y: auto;
+    padding: 4vh var(--gutter);
+  }
+  .mobile-menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+  }
+  .mobile-menu li {
+    margin: 0.35em 0;
+  }
+  .mobile-menu a {
+    color: var(--sage);
+    text-decoration: none;
+    font-size: 33px;
+    line-height: 1.1;
+  }
+  .mobile-langs {
+    margin-top: 2em !important;
+  }
+  .mobile-langs a {
+    font-size: var(--fs-body);
+    text-decoration: underline;
+  }
+
+  @media (max-width: 767px) {
+    .bar {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+    }
+    .burger {
+      display: block;
+    }
+    .logo {
+      justify-self: center;
+    }
+    .logo img {
+      height: 44px;
+    }
+    .desktop-nav {
+      display: none;
+    }
+  }
+</style>

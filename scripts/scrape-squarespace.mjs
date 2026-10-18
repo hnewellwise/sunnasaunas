@@ -25,7 +25,9 @@ const decode = (s) => s.replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/
 
 async function get(url, as = 'text') {
   for (let attempt = 1; attempt <= 3; attempt++) {
-    const res = await fetch(url, { headers: { 'user-agent': 'sunna-migration-snapshot/1.0' } });
+    // Without an explicit Accept the CDN transcodes images to WebP; ask for the original format.
+    const accept = as === 'buffer' ? 'image/jpeg,image/png,image/gif,image/x-icon,image/*;q=0.5' : '*/*';
+    const res = await fetch(url, { headers: { 'user-agent': 'sunna-migration-snapshot/1.0', accept } });
     if (res.ok) return as === 'buffer' ? Buffer.from(await res.arrayBuffer()) : res.text();
     if (res.status === 404) return null;
     await new Promise((r) => setTimeout(r, 1000 * attempt));
@@ -62,7 +64,7 @@ console.log(`${paths.length} URLs`);
 
 const pages = {};
 const imageUrls = new Set();
-const CDN = /https?:\/\/images\.squarespace-cdn\.com\/content\/v1\/[^\s"'<>)\\?]+/g;
+const CDN = /https?:\/\/images\.squarespace-cdn\.com\/content\/v1\/[^\s"'<>)\\?&]+/g;
 
 await pool(paths, 4, async (path) => {
   const htmlFile = fileFor(path, 'html');
@@ -94,7 +96,7 @@ await pool([...imageUrls], 6, async (url) => {
   manifest[url] = local;
   const dest = join(OUT, local);
   if (!FORCE && (await exists(dest))) return;
-  const buf = await get(`${url}?format=2500w`, 'buffer');
+  const buf = await get(`${url}?format=original`, 'buffer');
   if (buf) await save(dest, buf);
 });
 await save(join(OUT, 'images.json'), JSON.stringify(Object.fromEntries(Object.entries(manifest).sort()), null, 2));

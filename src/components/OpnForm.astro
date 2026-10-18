@@ -5,10 +5,12 @@ import type { Locale } from '../i18n/config';
 
 interface Props {
   lang: Locale;
+  form: 'contact' | 'quote';
 }
 
-const { lang } = Astro.props;
-const slug = site.opnform[lang] ?? site.opnform.en;
+const { lang, form } = Astro.props;
+const forms = site.opnform[form];
+const slug = forms[lang] ?? forms.en;
 ---
 
 {slug ? (
@@ -26,7 +28,17 @@ const slug = site.opnform[lang] ?? site.opnform.en;
     </script>
   </div>
 ) : (
-  <p class="opnform-fallback">
+  <p class="opnform-fallback rte">
     {t(lang, 'form.fallback')} <a href={`mailto:${site.email}`}>{site.email}</a>
   </p>
 )}
+
+<style>
+  .opnform {
+    margin-top: 24px;
+  }
+  .opnform-fallback {
+    margin-top: 24px;
+    font-size: var(--fs-small);
+  }
+</style>

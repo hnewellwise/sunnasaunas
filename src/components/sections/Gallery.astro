@@ -1,0 +1,132 @@
+---
+import SectionWrap from './SectionWrap.astro';
+import Img from '../Img.astro';
+import type { GallerySection } from './types';
+import { loadImage } from '../../lib/images';
+
+interface Props {
+  section: GallerySection;
+}
+
+// Justified-row photo gallery (Squarespace "gallery" section) with a native <dialog> lightbox.
+const { section: s } = Astro.props;
+const images = await Promise.all(s.images.map(async (i) => ({ ...i, meta: await loadImage(i.src) })));
+---
+
+<SectionWrap theme={s.theme} pad={s.pad} id={s.id}>
+  <ul class="gallery" data-gallery>
+    {images.map((img, i) => (
+      <li style={`--r:${(img.meta.width / img.meta.height).toFixed(3)}`}>
+        <button type="button" data-index={i} aria-label={img.alt || `Photo ${i + 1}`}>
+          <Img src={img.meta} alt={img.alt ?? ''} widths={[400, 800]} sizes="(min-width: 768px) 30vw, 50vw" />
+        </button>
+      </li>
+    ))}
+  </ul>
+  <dialog class="lightbox">
+    <button class="close" type="button" aria-label="Close">×</button>
+    <button class="prev" type="button" aria-label="Previous">‹</button>
+    <img alt="" />
+    <button class="next" type="button" aria-label="Next">›</button>
+  </dialog>
+</SectionWrap>
+
+<script>
+  for (const gallery of document.querySelectorAll<HTMLElement>('[data-gallery]')) {
+    const dialog = gallery.nextElementSibling as HTMLDialogElement;
+    const big = dialog.querySelector('img')!;
+    const thumbs = [...gallery.querySelectorAll<HTMLImageElement>('img')];
+    let index = 0;
+    const show = (i: number) => {
+      index = (i + thumbs.length) % thumbs.length;
+      const t = thumbs[index];
+      big.srcset = t.srcset;
+      big.src = t.currentSrc || t.src;
+      big.sizes = '90vw';
+      big.alt = t.alt;
+    };
+    gallery.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('button[data-index]');
+      if (!btn) return;
+      show(Number(btn.dataset.index));
+      dialog.showModal();
+    });
+    dialog.querySelector('.close')!.addEventListener('click', () => dialog.close());
+    dialog.querySelector('.prev')!.addEventListener('click', () => show(index - 1));
+    dialog.querySelector('.next')!.addEventListener('click', () => show(index + 1));
+    dialog.addEventListener('click', (e) => e.target === dialog && dialog.close());
+    dialog.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') show(index - 1);
+      if (e.key === 'ArrowRight') show(index + 1);
+    });
+  }
+</script>
+
+<style>
+  .gallery {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .gallery li {
+    flex: calc(var(--r) * 100) 1 calc(var(--r) * 180px);
+    aspect-ratio: var(--r);
+  }
+  .gallery::after {
+    content: '';
+    flex: 999 1 0;
+  }
+  .gallery button {
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: zoom-in;
+  }
+  .gallery :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .lightbox {
+    max-width: 100vw;
+    max-height: 100vh;
+    width: 100vw;
+    height: 100vh;
+    border: 0;
+    padding: 0;
+    background: rgba(230, 228, 205, 0.97);
+  }
+  .lightbox[open] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .lightbox img {
+    max-width: 86vw;
+    max-height: 88vh;
+    object-fit: contain;
+  }
+  .lightbox button {
+    position: absolute;
+    background: none;
+    border: 0;
+    font-size: 48px;
+    color: var(--olive);
+    cursor: pointer;
+    padding: 12px 20px;
+  }
+  .close { top: 12px; right: 12px; }
+  .prev { left: 8px; top: 50%; transform: translateY(-50%); }
+  .next { right: 8px; top: 50%; transform: translateY(-50%); }
+  @media (max-width: 767px) {
+    .gallery li {
+      flex-basis: calc(var(--r) * 110px);
+    }
+  }
+</style>

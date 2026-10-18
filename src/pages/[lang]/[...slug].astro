@@ -7,26 +7,16 @@ import type { GetStaticPaths } from 'astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { builtLocales, type Locale } from '../../i18n/config';
-import { pageSlugs, alternatesFor, staticPageKeys, type PageKey, type StaticPageKey, type Alternate } from '../../i18n/routes';
+import { pageSlugs, alternatesFor, type PageKey, type Alternate } from '../../i18n/routes';
 import { entriesFor, langOf, pageEntry as findPage, translationSlugs, slugOf } from '../../lib/content';
 import { site } from '../../config/site';
 
-import Home from '../../views/Home.astro';
-import About from '../../views/About.astro';
-import ForEvents from '../../views/ForEvents.astro';
-import IceBath from '../../views/IceBath.astro';
-import SaunasForSale from '../../views/SaunasForSale.astro';
-import Contact from '../../views/Contact.astro';
-import Privacy from '../../views/Privacy.astro';
-import CircleIndex from '../../views/CircleIndex.astro';
+import Page from '../../views/Page.astro';
 import CirclePost from '../../views/CirclePost.astro';
-import WorkIndex from '../../views/WorkIndex.astro';
 import WorkEntry from '../../views/WorkEntry.astro';
 
-
 type Props =
-  | { kind: 'page'; lang: Locale; key: StaticPageKey; alternates: Alternate[] }
-  | { kind: 'index'; lang: Locale; key: 'circle' | 'work'; alternates: Alternate[] }
+  | { kind: 'page'; lang: Locale; key: PageKey; alternates: Alternate[] }
   | { kind: 'circle'; lang: Locale; entry: CollectionEntry<'circle'>; alternates: Alternate[] }
   | { kind: 'work'; lang: Locale; entry: CollectionEntry<'work'>; alternates: Alternate[] };
 
@@ -40,7 +30,8 @@ export const getStaticPaths = (async () => {
   const paths: { params: { lang: Locale; slug: string | undefined }; props: Props }[] = [];
 
   for (const lang of builtLocales) {
-    for (const key of staticPageKeys) {
+    // Every page key with a content file in this locale (incl. the circle/work index pages).
+    for (const key of Object.keys(pageSlugs) as PageKey[]) {
       const available = has(key);
       if (!available.includes(lang)) continue;
       paths.push({
@@ -50,10 +41,6 @@ export const getStaticPaths = (async () => {
     }
 
     for (const key of ['circle', 'work'] as const) {
-      paths.push({
-        params: { lang, slug: pageSlugs[key][lang] },
-        props: { kind: 'index', lang, key, alternates: alternatesFor(key) },
-      });
       for (const entry of await entriesFor(key, lang)) {
         const entrySlugs = await translationSlugs(key, entry.data.translationKey);
         paths.push({
@@ -76,7 +63,7 @@ let type: 'website' | 'article' = 'website';
 let jsonLd: Record<string, unknown> | undefined;
 let pageEntry: CollectionEntry<'pages'> | undefined;
 
-if (props.kind === 'page' || props.kind === 'index') {
+if (props.kind === 'page') {
   pageEntry = await findPage(lang, props.key);
   title = pageEntry?.data.seoTitle ?? pageEntry?.data.title ?? site.name;
   description = pageEntry?.data.description ?? '';
@@ -113,14 +100,10 @@ if (props.kind === 'page' || props.kind === 'index') {
   }
 }
 
-const staticViews: Record<StaticPageKey, typeof Home> = { home: Home, about: About, forEvents: ForEvents, iceBath: IceBath, saunasForSale: SaunasForSale, contact: Contact, privacy: Privacy };
-const View = props.kind === 'page' ? staticViews[props.key] : null;
 ---
 
 <BaseLayout {lang} {title} {description} {alternates} {image} {type} {jsonLd}>
-  {View && pageEntry && <View lang={lang} entry={pageEntry} />}
-  {props.kind === 'index' && props.key === 'circle' && <CircleIndex lang={lang} entry={pageEntry} />}
-  {props.kind === 'index' && props.key === 'work' && <WorkIndex lang={lang} entry={pageEntry} />}
+  {props.kind === 'page' && pageEntry && <Page lang={lang} entry={pageEntry} />}
   {props.kind === 'circle' && <CirclePost lang={lang} entry={props.entry} />}
   {props.kind === 'work' && <WorkEntry lang={lang} entry={props.entry} />}
 </BaseLayout>

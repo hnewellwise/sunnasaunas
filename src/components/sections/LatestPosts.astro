@@ -1,0 +1,104 @@
+---
+import { Image } from 'astro:assets';
+import SectionWrap from './SectionWrap.astro';
+import type { Locale } from '../../i18n/config';
+import type { LatestPostsSection } from './types';
+import { pathFor } from '../../i18n/routes';
+import { entriesFor, slugOf } from '../../lib/content';
+import { md, mdInline } from '../../lib/markdown';
+import { formatDate } from '../../lib/dates';
+
+interface Props {
+  section: LatestPostsSection;
+  lang: Locale;
+}
+
+// Home "The Circle" block: three most recent posts on a sage card.
+const { section: s, lang } = Astro.props;
+const posts = (await entriesFor('circle', lang)).slice(0, 3);
+---
+
+<SectionWrap theme={s.theme} pad={s.pad ?? 'sm'} id={s.id}>
+  <div class="head" data-reveal>
+    <h2 set:html={mdInline(s.heading, lang)} />
+    {s.body && <div class="rte" set:html={md(s.body, lang)} />}
+  </div>
+  <div class="panel" data-reveal>
+    <p class="label">{s.label}</p>
+    <ul>
+      {posts.map((p) => (
+        <li>
+          <a href={pathFor('circle', lang, slugOf(p))}>
+            {p.data.heroImage && <Image src={p.data.heroImage} alt="" widths={[320, 640]} sizes="(min-width: 768px) 20vw, 80vw" />}
+            <span class="t">{p.data.title}</span>
+          </a>
+          <time datetime={p.data.pubDate.toISOString()}>{formatDate(p.data.pubDate, lang, 'long')}</time>
+        </li>
+      ))}
+    </ul>
+  </div>
+</SectionWrap>
+
+<style>
+  .head {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+  .head h2 {
+    font-size: var(--fs-h3);
+    margin-bottom: 0.6em;
+  }
+  .head .rte {
+    font-size: var(--fs-small);
+  }
+  .panel {
+    background: var(--sage);
+    color: var(--cream);
+    border-radius: var(--radius-img);
+    padding: 4.4vw;
+    margin-inline: 3vw;
+  }
+  .label {
+    font-size: 11px;
+    margin-bottom: 1em;
+  }
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1vw;
+  }
+  a {
+    color: #fff;
+    text-decoration: none;
+  }
+  a :global(img) {
+    aspect-ratio: 1.66;
+    width: 100%;
+    object-fit: cover;
+    margin-bottom: 12px;
+  }
+  .t {
+    display: block;
+    font-size: 15px;
+    line-height: 1.2;
+  }
+  time {
+    display: block;
+    font-size: 10px;
+    margin-top: 4px;
+    color: var(--cream);
+  }
+  @media (max-width: 767px) {
+    .panel {
+      margin-inline: 0;
+      padding: 24px;
+    }
+    ul {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+  }
+</style>

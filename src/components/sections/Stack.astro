@@ -1,0 +1,101 @@
+---
+import SectionWrap from './SectionWrap.astro';
+import Button from '../Button.astro';
+import type { Locale } from '../../i18n/config';
+import type { StackSection } from './types';
+import { md } from '../../lib/markdown';
+
+interface Props {
+  section: StackSection;
+  lang: Locale;
+}
+
+// Centred column of copy, dividers, tables and buttons (How It Works "What's Included" block).
+const { section: s, lang } = Astro.props;
+---
+
+<SectionWrap theme={s.theme} pad={s.pad} id={s.id}>
+  <div class="stack">
+    {s.blocks.map((b) =>
+      'divider' in b ? (
+        <hr />
+      ) : 'button' in b ? (
+        <div class="btn-row" data-reveal><Button {...b.button} lang={lang} wide /></div>
+      ) : 'table' in b ? (
+        <table data-reveal>
+          <thead><tr>{b.table.head.map((h) => <th>{h}</th>)}</tr></thead>
+          <tbody>{b.table.rows.map((r) => <tr>{r.map((c) => <td>{c}</td>)}</tr>)}</tbody>
+        </table>
+      ) : (
+        <div class="rte" data-reveal set:html={md(b.body, lang)} />
+      ),
+    )}
+  </div>
+</SectionWrap>
+
+<style>
+  .stack {
+    max-width: 53vw;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .rte {
+    font-size: var(--fs-small);
+  }
+  .rte :global(h2),
+  .rte :global(h3) {
+    font-size: var(--fs-h3);
+    margin: 0.6em 0 0.5em;
+  }
+  .rte :global(h4) {
+    font-size: var(--fs-h4);
+    margin: 0.8em 0 0.6em;
+  }
+  .rte :global(ul) {
+    list-style-position: inside;
+    padding: 0;
+    margin: 0 0 1em;
+  }
+  .rte :global(li) {
+    margin-bottom: 0.4em;
+  }
+  .rte :global(li p) {
+    display: inline;
+  }
+  hr {
+    border: 0;
+    border-top: 1px solid var(--sage);
+    margin: 40px 0;
+  }
+  .btn-row {
+    margin: 8px 0 16px;
+  }
+  table {
+    margin: 0 auto 24px;
+    border-collapse: collapse;
+    font-size: var(--fs-small);
+    text-align: left;
+    width: 26vw;
+  }
+  th {
+    background: #fff;
+    color: #000;
+    font-weight: 500;
+  }
+  th,
+  td {
+    padding: 10px 12px;
+    border: 1px solid var(--cream);
+  }
+  tbody tr:nth-child(even) td {
+    background: #fff;
+  }
+  @media (max-width: 767px) {
+    .stack {
+      max-width: none;
+    }
+    table {
+      width: 100%;
+    }
+  }
+</style>

@@ -47,16 +47,16 @@ const work = defineCollection({
 });
 
 /**
- * Copy for the static marketing pages. One file per page key per locale
- * (src/content/pages/<lang>/<pageKey>.md). Section copy goes in `sections` as free-form
- * YAML so each view can shape its own data; the markdown body is optional long-form copy.
+ * Static marketing pages. One file per page key per locale (src/content/pages/<lang>/<pageKey>.md).
+ * `sections` is the ordered list of page sections; see src/components/sections/types.ts for
+ * the shapes. The markdown body (optional) renders after the sections as long-form copy.
  */
 const pages = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/pages' }),
   schema: ({ image }) =>
     z.object({
       ...shared({ image }),
-      sections: z.record(z.string(), z.any()).default({}),
+      sections: z.array(z.looseObject({ type: z.string() })).default([]),
     }),
 });
 

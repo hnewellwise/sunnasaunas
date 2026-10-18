@@ -1,0 +1,49 @@
+---
+import { render, type CollectionEntry } from 'astro:content';
+import type { Locale } from '../i18n/config';
+import Sections from '../components/sections/Sections.astro';
+import SectionWrap from '../components/sections/SectionWrap.astro';
+import type { Section } from '../components/sections/types';
+
+interface Props {
+  lang: Locale;
+  entry: CollectionEntry<'pages'>;
+}
+
+// Every static page is an ordered list of sections from its content file, optionally
+// followed by long-form markdown (privacy policy).
+const { lang, entry } = Astro.props;
+const { Content } = await render(entry);
+const hasBody = Boolean(entry.body?.replace(/<!--[\s\S]*?-->/g, '').trim());
+---
+
+<Sections sections={entry.data.sections as Section[]} lang={lang} />
+{hasBody && (
+  <SectionWrap pad="md">
+    <article class="prose">
+      <Content />
+    </article>
+  </SectionWrap>
+)}
+
+<style>
+  .prose {
+    max-width: 62vw;
+    margin: 0 auto;
+    font-size: var(--fs-small);
+    line-height: 1.4;
+  }
+  .prose :global(h1) {
+    font-size: var(--fs-h2);
+  }
+  .prose :global(h2),
+  .prose :global(h3) {
+    font-size: var(--fs-h4);
+    margin-top: 1.6em;
+  }
+  @media (max-width: 767px) {
+    .prose {
+      max-width: none;
+    }
+  }
+</style>

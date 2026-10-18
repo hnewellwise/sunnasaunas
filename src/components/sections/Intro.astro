@@ -1,0 +1,68 @@
+---
+import SectionWrap from './SectionWrap.astro';
+import Img from '../Img.astro';
+import Button from '../Button.astro';
+import type { Locale } from '../../i18n/config';
+import type { IntroSection } from './types';
+import { mdInline } from '../../lib/markdown';
+
+interface Props {
+  section: IntroSection;
+  lang: Locale;
+}
+
+const { section, lang } = Astro.props;
+---
+
+<SectionWrap theme={section.theme} pad={section.pad ?? 'sm'} id={section.id} class="intro">
+  <div class="inner" data-reveal>
+    {section.icon && <Img src={section.icon.src} alt={section.icon.alt ?? ''} sizes="72px" widths={[72, 144]} class="icon" />}
+    <h2 class="h4" set:html={mdInline(section.heading, lang)} />
+    {section.buttons && (
+      <div class="buttons">
+        {section.buttons.map((b) => <Button {...b} lang={lang} wide />)}
+      </div>
+    )}
+  </div>
+</SectionWrap>
+
+<style>
+  .inner {
+    max-width: 66vw;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .inner :global(.icon) {
+    width: 72px;
+    margin: 0 auto 24px;
+  }
+  .h4 {
+    font-size: var(--fs-h4);
+    line-height: 1.15;
+  }
+  .buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1vw;
+    margin-top: 32px;
+    flex-wrap: wrap;
+  }
+  .buttons :global(.btn) {
+    font-size: 13px;
+    padding-block: 1.6em;
+  }
+  @media (max-width: 767px) {
+    .inner {
+      max-width: none;
+    }
+    .buttons {
+      flex-wrap: nowrap;
+      gap: 3vw;
+    }
+    .buttons :global(.btn) {
+      flex: 1;
+      min-width: 0;
+      padding-block: 2.2em;
+    }
+  }
+</style>

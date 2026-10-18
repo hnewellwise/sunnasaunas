@@ -1,0 +1,174 @@
+---
+import SectionWrap from './SectionWrap.astro';
+import Img from '../Img.astro';
+import Button from '../Button.astro';
+import OpnForm from '../OpnForm.astro';
+import type { Locale } from '../../i18n/config';
+import type { SplitSection } from './types';
+import { md, mdInline } from '../../lib/markdown';
+import { aspectVars } from '../../lib/aspect';
+
+interface Props {
+  section: SplitSection;
+  lang: Locale;
+}
+
+const { section: s, lang } = Astro.props;
+const H = `h${s.level ?? 3}` as 'h1' | 'h2' | 'h3' | 'h4';
+const side = s.imageSide ?? 'right';
+const size = s.imageSize ?? 'md';
+const hasMedia = Boolean(s.image || s.aside);
+const sizes = { sm: '(min-width: 768px) 26vw, 88vw', md: '(min-width: 768px) 33vw, 88vw', lg: '(min-width: 768px) 40vw, 88vw' }[size];
+---
+
+<SectionWrap theme={s.theme} pad={s.pad} id={s.id} class={s.curve ? 'curve' : undefined}>
+  <div class:list={['split', `img-${side}`, `size-${size}`, { 'no-media': !hasMedia }]}>
+    {s.heading && <H class="heading" data-reveal set:html={mdInline(s.heading, lang)} />}
+    {s.image && (
+      <div class="media" data-reveal style={aspectVars(s.imageAspect, s.imageAspectMobile)}>
+        <Img src={s.image.src} alt={s.image.alt ?? ''} sizes={sizes} class={`shape-${s.imageShape ?? 'rounded'}`} />
+        {s.imageNote && <div class="note rte small" set:html={md(s.imageNote, lang)} />}
+      </div>
+    )}
+    {s.aside && <div class="media aside rte" data-reveal set:html={md(s.aside, lang)} />}
+    <div class="copy" data-reveal>
+      {s.body && <div class="rte" set:html={md(s.body, lang)} />}
+      {s.accordion && (
+        <div class="accordion">
+          {s.accordion.map((item, i) => (
+            <details open={i === 0}>
+              <summary>{item.title}</summary>
+              <div class="rte small" set:html={md(item.body, lang)} />
+            </details>
+          ))}
+        </div>
+      )}
+      {s.buttons && (
+        <div class="buttons">
+          {s.buttons.map((b) => <Button {...b} lang={lang} wide />)}
+        </div>
+      )}
+      {s.form && <OpnForm lang={lang} form={s.form} />}
+    </div>
+  </div>
+</SectionWrap>
+
+<style>
+  .split {
+    display: grid;
+    column-gap: 4vw;
+    grid-template-areas:
+      'heading media'
+      'copy media';
+    grid-template-columns: 1fr var(--media-w);
+    grid-template-rows: auto 1fr;
+    align-items: start;
+  }
+  .img-left {
+    grid-template-areas:
+      'media heading'
+      'media copy';
+    grid-template-columns: var(--media-w) 1fr;
+  }
+  .size-sm { --media-w: 26vw; }
+  .size-md { --media-w: 33vw; }
+  .size-lg { --media-w: 40vw; }
+  .no-media {
+    grid-template-areas: 'heading' 'copy';
+    grid-template-columns: 1fr;
+  }
+  .heading { grid-area: heading; margin-bottom: 0.6em; }
+  .media { grid-area: media; }
+  .copy { grid-area: copy; max-width: 40vw; }
+  .no-media .copy { max-width: none; }
+
+  .media :global(img) {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+  .media :global(.shape-rounded) { border-radius: var(--radius-img); }
+  .media :global(.shape-oval) { border-radius: 50%; }
+  .media :global(.shape-circle) { border-radius: 50%; aspect-ratio: 1; }
+  .note { margin-top: 32px; }
+  .aside { align-self: start; }
+
+  .rte :global(ul) {
+    padding-left: 1.1em;
+    margin: 0 0 1em;
+  }
+  .rte :global(li) {
+    margin-bottom: 0.6em;
+  }
+  .rte :global(li p) {
+    margin: 0;
+  }
+
+  .accordion {
+    margin: 24px 0 8px;
+    border-top: 2px solid var(--sage);
+  }
+  details {
+    border-bottom: 2px solid var(--sage);
+  }
+  summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 30px 0;
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    font-size: var(--fs-small);
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary::before {
+    content: '';
+    width: 12px;
+    height: 12px;
+    border-left: 2px solid var(--sage);
+    border-bottom: 2px solid var(--sage);
+    transform: rotate(-45deg) translate(2px, -2px);
+    transition: transform 0.2s;
+    flex: none;
+  }
+  details[open] summary::before {
+    transform: rotate(135deg) translate(-2px, 2px);
+  }
+  details .rte {
+    padding: 0 30% 30px 0;
+  }
+
+  .buttons {
+    display: flex;
+    gap: 1vw;
+    flex-wrap: wrap;
+    margin-top: 40px;
+  }
+
+  /* The Circle header: section background bows down in a shallow arc. */
+  :global(.section.curve) {
+    padding-bottom: clamp(80px, 12vw, 180px);
+    clip-path: ellipse(100% 100% at 50% 0%);
+  }
+
+  @media (max-width: 767px) {
+    .split,
+    .img-left {
+      grid-template-areas: 'heading' 'media' 'copy';
+      grid-template-columns: 1fr;
+    }
+    .copy { max-width: none; }
+    .media { margin-bottom: 24px; }
+    .buttons { justify-content: center; }
+    details .rte { padding-right: 10%; }
+  }
+  .media :global(img) {
+    aspect-ratio: var(--ar, auto);
+    object-fit: cover;
+  }
+  @media (max-width: 767px) {
+    .media :global(img) {
+      aspect-ratio: var(--ar-m, var(--ar, auto));
+    }
+  }
+</style>

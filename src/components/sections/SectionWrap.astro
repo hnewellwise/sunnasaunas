@@ -1,0 +1,39 @@
+---
+import type { Theme } from './types';
+
+interface Props {
+  theme?: Theme;
+  pad?: 'none' | 'sm' | 'md' | 'lg';
+  id?: string;
+  class?: string;
+}
+
+const { theme = 'cream', pad = 'md', id, class: cls } = Astro.props;
+---
+
+<section id={id} class:list={['section', `theme-${theme}`, `pad-${pad}`, cls]}>
+  <slot />
+</section>
+
+<style>
+  .section {
+    position: relative;
+    padding-inline: var(--gutter);
+  }
+  .pad-none { padding-block: 0; }
+  .pad-sm { padding-block: clamp(40px, 5vw, 72px); }
+  .pad-md { padding-block: clamp(56px, 8vw, 120px); }
+  .pad-lg { padding-block: clamp(72px, 12vw, 180px); }
+
+  .theme-sage { --heading: #fff; --text: #fff; --link: #fff; }
+  .theme-clay { --heading: var(--cream); --text: var(--cream); --link: var(--cream); }
+  .theme-olive { --heading: var(--cream); --text: var(--cream); --link: var(--cream); }
+  .theme-cream { --heading: var(--clay); --text: var(--clay); --link: var(--olive); }
+
+  .section { color: var(--text); }
+  .section :global(h1),
+  .section :global(h2),
+  .section :global(h3),
+  .section :global(h4) { color: var(--heading); }
+  .section :global(.rte a) { color: var(--link); }
+</style>

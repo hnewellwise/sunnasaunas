@@ -3,25 +3,76 @@ import type { Locale } from '../i18n/config';
 import { pathFor } from '../i18n/routes';
 import { footerNav, t } from '../i18n/ui';
 import { site } from '../config/site';
+import Img from './Img.astro';
+import InstagramIcon from '../assets/icons/instagram.svg';
 
 interface Props {
   lang: Locale;
 }
 
 const { lang } = Astro.props;
-// TODO(build): replicate Squarespace footer layout.
+// Squarespace footer: page links left, spiral + Instagram centre, contact/privacy right.
+const left = footerNav.filter((n) => !['contact', 'privacy'].includes(n.key));
+const right = footerNav.filter((n) => ['contact', 'privacy'].includes(n.key));
 ---
 
 <footer class="site-footer">
-  <nav aria-label="Footer">
-    <ul>
-      {footerNav.map(({ key, label }) => (
-        <li><a href={pathFor(key, lang)}>{t(lang, label)}</a></li>
-      ))}
-    </ul>
-  </nav>
-  <p>
-    <a href={`mailto:${site.email}`}>{site.email}</a>
-    · <a href={site.instagram} rel="me noopener">Instagram</a>
-  </p>
+  <ul class="col">
+    {left.map(({ key, label }) => <li><a href={pathFor(key, lang)}>{t(lang, label)}</a></li>)}
+  </ul>
+  <div class="col centre">
+    <Img src="woosh-ok.png" alt="" sizes="60px" widths={[60, 120]} class="spiral" />
+    <a class="ig" href={site.instagram} rel="me noopener" target="_blank" aria-label="Instagram">
+      <InstagramIcon width={24} height={24} aria-hidden="true" />
+    </a>
+  </div>
+  <ul class="col">
+    {right.map(({ key, label }) => <li><a href={pathFor(key, lang)}>{t(lang, label)}</a></li>)}
+  </ul>
 </footer>
+
+<style>
+  .site-footer {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-items: start;
+    padding: 48px var(--gutter) 72px;
+    color: var(--olive);
+    font-size: var(--fs-small);
+  }
+  .col {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+  }
+  .col li {
+    margin-bottom: 0.9em;
+  }
+  .col a {
+    color: var(--olive);
+    text-underline-offset: 0.15em;
+  }
+  .centre {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .centre :global(.spiral) {
+    width: 60px;
+  }
+  .ig {
+    color: var(--olive);
+    display: inline-flex;
+  }
+  @media (max-width: 767px) {
+    .site-footer {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    .centre {
+      order: -1;
+    }
+  }
+</style>

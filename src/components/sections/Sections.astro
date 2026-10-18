@@ -1,0 +1,41 @@
+---
+import type { Locale } from '../../i18n/config';
+import type { Section } from './types';
+import Hero from './Hero.astro';
+import Intro from './Intro.astro';
+import Split from './Split.astro';
+import Collage from './Collage.astro';
+import Cards from './Cards.astro';
+import LatestPosts from './LatestPosts.astro';
+import Banner from './Banner.astro';
+import Cta from './Cta.astro';
+import Stack from './Stack.astro';
+import Gallery from './Gallery.astro';
+import FormBlock from './FormBlock.astro';
+import CollectionList from './CollectionList.astro';
+
+interface Props {
+  sections: Section[];
+  lang: Locale;
+}
+
+const { sections, lang } = Astro.props;
+---
+
+{sections.map((section) => {
+  switch (section.type) {
+    case 'hero': return <Hero section={section} lang={lang} />;
+    case 'intro': return <Intro section={section} lang={lang} />;
+    case 'split': return <Split section={section} lang={lang} />;
+    case 'collage': return <Collage section={section} lang={lang} />;
+    case 'cards': return <Cards section={section} lang={lang} />;
+    case 'latestPosts': return <LatestPosts section={section} lang={lang} />;
+    case 'banner': return <Banner section={section} />;
+    case 'cta': return <Cta section={section} lang={lang} />;
+    case 'stack': return <Stack section={section} lang={lang} />;
+    case 'gallery': return <Gallery section={section} />;
+    case 'form': return <FormBlock section={section} lang={lang} />;
+    case 'collection': return <CollectionList section={section} lang={lang} />;
+    default: throw new Error(`Unknown section type: ${(section as { type: string }).type}`);
+  }
+})}
