@@ -4,6 +4,9 @@
 import json, re, glob, html, datetime, os, sys
 sys.path.insert(0, os.path.dirname(__file__))
 from html2md import html2md
+import importlib.util
+_hb = importlib.util.spec_from_file_location('hard_breaks', os.path.join(os.path.dirname(__file__), 'hard-breaks.py'))
+hard_breaks = importlib.util.module_from_spec(_hb); _hb.loader.exec_module(hard_breaks)
 
 imap = json.load(open('migration/image-map.json'))
 def local(url):
@@ -69,5 +72,5 @@ for f in sorted(glob.glob('migration/snapshot/json/en/the-circle/*.json')):
         '---',
         '',
     ]
-    open(f'src/content/circle/en/{slug}.md', 'w').write('\n'.join(fm) + body)
+    open(f'src/content/circle/en/{slug}.md', 'w').write(hard_breaks.fix('\n'.join(fm) + body))
     print(slug, len(body), 'chars')

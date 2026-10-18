@@ -18,16 +18,16 @@ When you train hard, your muscles, joints, nervous system—all of it gets taxed
 
 *Warmth around your skin, blood pulsing in your veins, the world softening as the sweat kicks in.* That’s more than comfort - it’s physiology in action.
 
-- **Improved Blood Flow & Nutrient Delivery  
-  **Heat causes blood vessels to dilate. More blood flows into muscles. Oxygen, nutrients, immune cells show up faster. This helps repair micro-damage from training ([Sports Illustrated](https://www.si.com/everyday-athlete/training/why-saunas-are-a-game-changer-for-heart-health-and-athletic-longevity?utm_source=chatgpt.com)).
-- **Heat Shock Proteins (HSPs) & Cellular Repair  
-  **The thermal stress from heat triggers production of HSPs—molecular helpers that protect cell structures, reduce oxidative stress, and assist in repairing damage ([Frontiers in Sports & Active Living, 2025](https://www.frontiersin.org/journals/sports-and-active-living/articles/10.3389/fspor.2025.1462901/full?utm_source=chatgpt.com)).
-- **Reduced Inflammation & Faster Soreness Relief  
-  **Post-workout, you get tiny tears, metabolic by-products, inflammation. Sauna can help reduce these markers, or help the body clear them faster. Evidence shows regular use of sauna helps reduce soreness and inflammation ([PMC review, 2023](https://pmc.ncbi.nlm.nih.gov/articles/PMC10286597/?utm_source=chatgpt.com)).
-- **Neuromuscular Recovery & Power Gains  
-  **Regular post-exercise sauna use has shown up in studies boosting power output (jumps, sprints) after weeks of training, compared with training without sauna recovery ([Frontiers in Sports & Active Living, 2025](https://www.frontiersin.org/journals/sports-and-active-living/articles/10.3389/fspor.2025.1462901/full?utm_source=chatgpt.com)).
-- **Cardiovascular Benefits & Heat Tolerance  
-  **Heat exposure can mimic effects of moderate aerobic work: raising heart rate, improving vascular function, increasing plasma volume. Over time, this improves endurance and heat tolerance ([Journal of Thermal Biology, 2023](https://www.tandfonline.com/doi/full/10.1080/23328940.2023.2300623?utm_source=chatgpt.com)).
+- **Improved Blood Flow & Nutrient Delivery**  
+  Heat causes blood vessels to dilate. More blood flows into muscles. Oxygen, nutrients, immune cells show up faster. This helps repair micro-damage from training ([Sports Illustrated](https://www.si.com/everyday-athlete/training/why-saunas-are-a-game-changer-for-heart-health-and-athletic-longevity?utm_source=chatgpt.com)).
+- **Heat Shock Proteins (HSPs) & Cellular Repair**  
+  The thermal stress from heat triggers production of HSPs—molecular helpers that protect cell structures, reduce oxidative stress, and assist in repairing damage ([Frontiers in Sports & Active Living, 2025](https://www.frontiersin.org/journals/sports-and-active-living/articles/10.3389/fspor.2025.1462901/full?utm_source=chatgpt.com)).
+- **Reduced Inflammation & Faster Soreness Relief**  
+  Post-workout, you get tiny tears, metabolic by-products, inflammation. Sauna can help reduce these markers, or help the body clear them faster. Evidence shows regular use of sauna helps reduce soreness and inflammation ([PMC review, 2023](https://pmc.ncbi.nlm.nih.gov/articles/PMC10286597/?utm_source=chatgpt.com)).
+- **Neuromuscular Recovery & Power Gains**  
+  Regular post-exercise sauna use has shown up in studies boosting power output (jumps, sprints) after weeks of training, compared with training without sauna recovery ([Frontiers in Sports & Active Living, 2025](https://www.frontiersin.org/journals/sports-and-active-living/articles/10.3389/fspor.2025.1462901/full?utm_source=chatgpt.com)).
+- **Cardiovascular Benefits & Heat Tolerance**  
+  Heat exposure can mimic effects of moderate aerobic work: raising heart rate, improving vascular function, increasing plasma volume. Over time, this improves endurance and heat tolerance ([Journal of Thermal Biology, 2023](https://www.tandfonline.com/doi/full/10.1080/23328940.2023.2300623?utm_source=chatgpt.com)).
 
 ### **What the Studies Say: Recent Evidence**
 

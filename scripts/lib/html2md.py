@@ -5,6 +5,8 @@ def html2md(s):
     s = s.replace('&nbsp;', ' ')
     s = re.sub(r'</?span[^>]*>|</?div[^>]*>', '', s)
     s = re.sub(r'<(strong|b)>\s*</\1>', '', s)
+    # A line break inside bold (Squarespace "**Title<br>**") must close the bold first.
+    s = re.sub(r'(<br\s*/?>\s*)+</(strong|b)>', r'</\2><br>', s)
     s = re.sub(r'<(strong|b)>(.*?)</\1>', lambda m: f"**{m.group(2).strip()}**" + (' ' if m.group(2).endswith(' ') else ''), s, flags=re.S)
     s = re.sub(r'<(em|i)>(.*?)</\1>', r'*\2*', s, flags=re.S)
     s = re.sub(r'<a [^>]*href="([^"]*)"[^>]*>(.*?)</a>', r'[\2](\1)', s, flags=re.S)

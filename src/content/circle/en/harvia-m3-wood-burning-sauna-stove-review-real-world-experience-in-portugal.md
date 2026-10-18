@@ -111,11 +111,11 @@ From our experience the sauna is very cost effective to run with good quality, w
 
 ## Who the Harvia M3 Is Best For
 
-**Household outdoor saunas
-**The Harvia M3 really shines in outdoor settings. Garden saunas, cabins, and stand-alone builds where ventilation and chimney routing are straightforward. It delivers steady heat without relying on household electrics, and once it’s up to temperature, it holds beautifully.
+**Household outdoor saunas**  
+The Harvia M3 really shines in outdoor settings. Garden saunas, cabins, and stand-alone builds where ventilation and chimney routing are straightforward. It delivers steady heat without relying on household electrics, and once it’s up to temperature, it holds beautifully.
 
-**Off-grid setups
-**If you’re running a sauna in a remote spot, or anywhere grid power is limited or expensive like much of Portugal, the M3 makes a lot of sense. No heavy electrical upgrades or load calculations, just add wood.
+**Off-grid setups**  
+If you’re running a sauna in a remote spot, or anywhere grid power is limited or expensive like much of Portugal, the M3 makes a lot of sense. No heavy electrical upgrades or load calculations, just add wood.
 
-**People who enjoy tending a fire
-**This stove isn’t “set and forget”. You light it, you feed it, you learn how it behaves, start talking to people about the comparative thermal values of oak and olive. For the right person, that’s the whole point. The crackle of the fire, the smell of hot stone. It’s a tactile, hands-on experience that electric heaters simply don’t replicate.
+**People who enjoy tending a fire**  
+This stove isn’t “set and forget”. You light it, you feed it, you learn how it behaves, start talking to people about the comparative thermal values of oak and olive. For the right person, that’s the whole point. The crackle of the fire, the smell of hot stone. It’s a tactile, hands-on experience that electric heaters simply don’t replicate.

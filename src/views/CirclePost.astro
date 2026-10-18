@@ -69,13 +69,16 @@ const dateLocale = lang === 'en' ? 'en-GB' : lang;
     margin-top: -0.4em;
   }
   /* Squarespace gallery blocks: several images in one paragraph -> thumbnail row. */
-  .body :global(p:has(> img + img)) {
+  .body :global(p:has(> img ~ img)) {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 2vw;
     margin: 2em 0;
   }
-  .body :global(p:has(> img + img) img) {
+  .body :global(p:has(> img ~ img) br) {
+    display: none;
+  }
+  .body :global(p:has(> img ~ img) img) {
     aspect-ratio: 1;
     object-fit: cover;
     margin: 0;
@@ -95,7 +98,7 @@ const dateLocale = lang === 'en' ? 'en-GB' : lang;
     h1 {
       font-size: var(--fs-h3);
     }
-    .body :global(p:has(> img + img)) {
+    .body :global(p:has(> img ~ img)) {
       grid-template-columns: repeat(2, 1fr);
     }
   }
