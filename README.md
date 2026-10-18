@@ -7,7 +7,7 @@ npm install
 npm run dev
 ```
 
-- `CLAUDE.md`: project structure, routing, content conventions
-- `MIGRATION.md`: Squarespace → Cloudflare cutover runbook (DNS, redirects, SEO)
+- `CLAUDE.md`: templates, routing, content conventions, scripts
+- `MIGRATION.md`: Squarespace → Cloudflare cutover runbook (DNS, redirects, SEO) and items flagged for the owner
 
-Edit content in `src/content/` (Markdown). Push to `main` to deploy.
+Edit content in `src/content/` (Markdown): pages in `pages/`, blog posts in `circle/`, case studies in `work/`, one folder per language. Push to `main` to deploy.

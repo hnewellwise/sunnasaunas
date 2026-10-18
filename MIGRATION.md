@@ -76,3 +76,35 @@ Do this a day or more before cutover. Nothing visible changes and email must kee
 - Trailing-slash URLs (`/en/about/`) redirect with **307** (Cloudflare static-assets behaviour), not 301. Squarespace never used trailing slashes, so nothing indexed is affected.
 - `/` now redirects to `/en` (previously `/` served the home page with `/` as canonical). The 301 passes link equity; expect a short reshuffle of the home URL in Search Console.
 - Blog RSS was `/en/the-circle?format=rss`. Query strings can't be redirected from `_redirects`; if RSS matters, add `src/pages/[lang]/the-circle/rss.xml.ts` and a Redirect Rule for the old URL.
+
+## Flagged for owner
+
+### Assets that are not untouched originals (approval needed)
+- **Body font**: Squarespace used Adobe's *aktiv-grotesk*, which is licensed through Squarespace and can't be self-hosted. The new site uses **Inter** (free, self-hosted) as the closest substitute. Options: keep Inter, or add an Adobe Fonts web project and switch `--font-body` in `src/styles/global.css`. Headings use **Poppins**, the same font as before.
+- **Favicon**: square crop + resize of the original Squarespace favicon PNG (`src/assets/brand/favicon-original.png` → `public/favicon*.png`, `apple-touch-icon.png`). Nothing redrawn.
+- **Default social image** (`public/og-image.png`): the original clay logo PNG from Squarespace, unchanged. Per-page social images are 1200px JPEG resizes of the page's own photo.
+- **Instagram icon**: the SVG Squarespace itself served (copied from the snapshot), unchanged.
+- No AI-generated or recreated images anywhere; every photo in `src/assets/images/` is an unmodified original from the Squarespace CDN.
+
+### Needs your action before launch
+- **OpnForm**: create two forms on opnform.com and paste their slugs into `src/config/site.ts` → `opnform`:
+  - `contact` (Get In Touch): First name*, Last name*, Email*, "Sign up for news and updates" checkbox, Phone, Message* ("Give us some detail about your request"), button "Submit".
+  - `quote` (Purchase A Sauna, on /saunas-for-sale): the same, plus Country + Phone number, Your Location*, Message* ("If you already know the shape, size, oven type, windows then tell us here…"), button "Get A Quote".
+  - Optional per-language versions (PT/FR/ES); otherwise the English form is embedded on every language. Until a slug is set the page shows "Email us at hello@sunnasaunas.com".
+  - Export any past form submissions from Squarespace before cancelling.
+- **Privacy policy** (all languages): copied verbatim from Squarespace (last updated 4/9/25). It says Google Analytics is the only third party; the new site also uses **OpnForm** (form data) and **Cloudflare** (hosting/CDN). Needs updating by you.
+- **Cookie consent**: Squarespace showed a cookie banner; the new site loads GA4 without one. Under GDPR, choose either a consent banner (GA consent mode) or switch to cookieless Cloudflare Web Analytics (no banner needed). Until then consider this a launch blocker.
+- **Translations**: 54 drafted files (PT pt-PT, FR, ES) are `machine-draft` and not published. Review, set `translationStatus: reviewed`, then follow Phase 5. `node scripts/check-translations.mjs` shows what's left.
+
+### Content changes made during the migration (vs. Squarespace)
+- Privacy page title "Privacy Policy 2 — Sunna" → "Privacy Policy — Sunna".
+- Wrote meta descriptions where Squarespace had none: Our Work, Privacy, the four case studies, "The Perfect Sauna Routine For Beginners".
+- Ice Bath page "Contact Us" button pointed at `/en/ice-bath#contact`, which didn't exist; it now goes to the contact page.
+- Language menu: Squarespace's "English / Portuguese" nav folders became a real language switcher (shows only published languages).
+- Not replicated on purpose: the Squarespace cookie banner, the `/cart` page (redirects home), and the tiny "How It Works" title on mobile (a Squarespace rendering bug).
+
+### Worth a look (left as on the live site)
+- Home page "Beato Innovation District Pop Up" advertises a **27–29 March** event that has passed.
+- Existing copy typos kept verbatim: "ice top-ups,." (Ice Bath), "fits into you space" (Buy a Sauna), "Cancelation Policy", "physical and metal benefits" (post SEO description).
+- Citation links in "How to Recover Faster…" carry `?utm_source=chatgpt.com`.
+- Most images have no alt text (Squarespace had none). Adding descriptive alt text would help accessibility and image search.
